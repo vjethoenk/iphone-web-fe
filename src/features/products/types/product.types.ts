@@ -21,6 +21,7 @@ export interface Product {
   description: string;
   price: number;
   currency: string;
+  thumbnail: string;
   badge?: string;
   images: string[];
   colors: ProductColor[];
