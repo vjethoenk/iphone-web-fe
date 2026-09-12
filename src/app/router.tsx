@@ -1,6 +1,7 @@
 import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { MainLayout } from "./layouts/MainLayout";
+import { AdminLayout } from "./layouts/AdminLayout";
 import { HomePage } from "@/features/home";
 import { CartPage } from "@/features/cart/CartPage";
 import { RoutePlaceholder } from "@/components/common/RoutePlaceholder";
@@ -13,7 +14,55 @@ import ForbiddenPage from "@/pages/errors/ForbiddenPage";
 import NotFoundPage from "@/pages/errors/NotFoundPage";
 import ProductDetailPage from "@/pages/products/ProductDetailPage";
 
+import AdminProductListPage from "@/pages/admin/AdminProductListPage";
+import ProductCreatePage from "@/pages/admin/ProductCreatePage";
+
 const router = createBrowserRouter([
+  // Admin Protected Routes (using AdminLayout)
+  {
+    path: "/admin",
+    element: <AdminLayout />,
+    children: [
+      {
+        path: "",
+        element: <Navigate to="/admin/products" replace />,
+      },
+      {
+        path: "products",
+        element: <AdminProductListPage />,
+      },
+      {
+        path: "products/new",
+        element: <ProductCreatePage />,
+      },
+      {
+        path: "products/create",
+        element: <ProductCreatePage />,
+      },
+      {
+        path: "products/post",
+        element: <ProductCreatePage />,
+      },
+      {
+        path: "orders",
+        element: <RoutePlaceholder title="Admin Orders Management" />,
+      },
+      {
+        path: "customers",
+        element: <RoutePlaceholder title="Admin Customers Management" />,
+      },
+      {
+        path: "users",
+        element: <RoutePlaceholder title="Admin Users Management" />,
+      },
+      {
+        path: "settings",
+        element: <RoutePlaceholder title="Admin Settings" />,
+      },
+    ],
+  },
+
+  // Main Storefront Routes
   {
     element: <MainLayout />,
     children: [
@@ -75,22 +124,6 @@ const router = createBrowserRouter([
               },
             ],
           },
-
-          // Admin Protected Routes
-          {
-            path: "/admin",
-            element: <RoleRoute allowedRoles={[UserRole.ADMIN]} />,
-            children: [
-              {
-                path: "",
-                element: <RoutePlaceholder title="Admin Control Center & Dashboard" />,
-              },
-              {
-                path: "*",
-                element: <RoutePlaceholder title="Admin System Module" />,
-              },
-            ],
-          },
         ],
       },
 
@@ -102,6 +135,7 @@ const router = createBrowserRouter([
     ],
   },
 ]);
+
 
 export const AppRouter: React.FC = () => {
   return <RouterProvider router={router} />;

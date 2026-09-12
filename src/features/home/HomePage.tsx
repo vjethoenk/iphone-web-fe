@@ -1,7 +1,6 @@
 import React from "react";
 import { FeaturedProductSection } from "./components/FeaturedProductSection";
 import { ProductShowcaseSection } from "./components/ProductShowcaseSection";
-import { ComparisonSection } from "./components/ComparisonSection";
 import { TechnologySection } from "./components/TechnologySection";
 import { CameraSection } from "./components/CameraSection";
 import { PerformanceSection } from "./components/PerformanceSection";
