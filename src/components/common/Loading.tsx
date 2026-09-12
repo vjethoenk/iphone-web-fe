@@ -1,24 +1,32 @@
 import React from "react";
-import { Loader2 } from "lucide-react";
-import { cn } from "@/utils/cn";
 
 interface LoadingProps {
-  className?: string;
-  size?: "sm" | "md" | "lg";
-  text?: string;
+  fullScreen?: boolean;
+  message?: string;
 }
 
-export const Loading: React.FC<LoadingProps> = ({ className, size = "md", text }) => {
-  const sizeClasses = {
-    sm: "w-4 h-4",
-    md: "w-8 h-8",
-    lg: "w-12 h-12",
-  };
-
-  return (
-    <div className={cn("flex flex-col items-center justify-center p-8 gap-3", className)}>
-      <Loader2 className={cn("animate-spin text-neutral-400", sizeClasses[size])} />
-      {text && <p className="text-sm font-medium text-neutral-400 tracking-wide">{text}</p>}
+export const Loading: React.FC<LoadingProps> = ({
+  fullScreen = false,
+  message = "Đang tải...",
+}) => {
+  const content = (
+    <div className="flex flex-col items-center justify-center p-6 space-y-4">
+      <div className="w-10 h-10 border-4 border-black/10 border-t-black rounded-full animate-spin dark:border-white/10 dark:border-t-white" />
+      {message && (
+        <p className="text-sm font-medium text-gray-600 dark:text-gray-400 animate-pulse">
+          {message}
+        </p>
+      )}
     </div>
   );
+
+  if (fullScreen) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm dark:bg-black/80">
+        {content}
+      </div>
+    );
+  }
+
+  return content;
 };

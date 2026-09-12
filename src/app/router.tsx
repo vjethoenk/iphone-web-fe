@@ -4,72 +4,101 @@ import { MainLayout } from "./layouts/MainLayout";
 import { HomePage } from "@/features/home";
 import { CartPage } from "@/features/cart/CartPage";
 import { RoutePlaceholder } from "@/components/common/RoutePlaceholder";
-import { ROUTES } from "@/constants/routes";
+import { ProtectedRoute } from "@/components/common/ProtectedRoute";
+import { RoleRoute } from "@/components/common/RoleRoute";
+import { UserRole } from "@/features/auth";
+
+import LoginPage from "@/pages/auth/LoginPage";
+import ForbiddenPage from "@/pages/errors/ForbiddenPage";
+import NotFoundPage from "@/pages/errors/NotFoundPage";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: (
-      <MainLayout>
-        <HomePage />
-      </MainLayout>
-    ),
-  },
-  {
-    path: ROUTES.PRODUCTS,
-    element: (
-      <MainLayout>
-        <RoutePlaceholder title="Products Showcase & Catalog" />
-      </MainLayout>
-    ),
-  },
-  {
-    path: "/products/:id",
-    element: (
-      <MainLayout>
-        <RoutePlaceholder title="Product Detail Page" />
-      </MainLayout>
-    ),
-  },
-  {
-    path: ROUTES.CART,
-    element: (
-      <MainLayout>
-        <CartPage />
-      </MainLayout>
-    ),
-  },
-  {
-    path: ROUTES.CHECKOUT,
-    element: (
-      <MainLayout>
-        <RoutePlaceholder title="Checkout Process" />
-      </MainLayout>
-    ),
-  },
-  {
-    path: ROUTES.LOGIN,
-    element: (
-      <MainLayout>
-        <RoutePlaceholder title="Account Authentication (Login)" />
-      </MainLayout>
-    ),
-  },
-  {
-    path: ROUTES.REGISTER,
-    element: (
-      <MainLayout>
-        <RoutePlaceholder title="Account Registration" />
-      </MainLayout>
-    ),
-  },
-  {
-    path: ROUTES.ORDERS,
-    element: (
-      <MainLayout>
-        <RoutePlaceholder title="Customer Orders Management" />
-      </MainLayout>
-    ),
+    element: <MainLayout />,
+    children: [
+      // Public routes
+      {
+        path: "/",
+        element: <HomePage />,
+      },
+      {
+        path: "/products",
+        element: <RoutePlaceholder title="Products Showcase & Catalog" />,
+      },
+      {
+        path: "/products/:id",
+        element: <RoutePlaceholder title="Product Detail Page" />,
+      },
+      {
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
+        path: "/register",
+        element: <RoutePlaceholder title="Account Registration" />,
+      },
+      {
+        path: "/403",
+        element: <ForbiddenPage />,
+      },
+
+      // Authenticated Protected Routes
+      {
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: "/cart",
+            element: <CartPage />,
+          },
+          {
+            path: "/checkout",
+            element: <RoutePlaceholder title="Checkout Process" />,
+          },
+          {
+            path: "/orders",
+            element: <RoutePlaceholder title="Customer Orders Management" />,
+          },
+
+          // Staff Protected Routes
+          {
+            path: "/staff",
+            element: <RoleRoute allowedRoles={[UserRole.STAFF, UserRole.ADMIN]} />,
+            children: [
+              {
+                path: "",
+                element: <RoutePlaceholder title="Staff Management Dashboard" />,
+              },
+              {
+                path: "*",
+                element: <RoutePlaceholder title="Staff Module Page" />,
+              },
+            ],
+          },
+
+          // Admin Protected Routes
+          {
+            path: "/admin",
+            element: <RoleRoute allowedRoles={[UserRole.ADMIN]} />,
+            children: [
+              {
+                path: "",
+                element: <RoutePlaceholder title="Admin Control Center & Dashboard" />,
+              },
+              {
+                path: "*",
+                element: <RoutePlaceholder title="Admin System Module" />,
+              },
+            ],
+          },
+        ],
+      },
+
+      // 404 Not Found fallback route
+      {
+        path: "*",
+        element: <NotFoundPage />,
+      },
+    ],
   },
 ]);
 

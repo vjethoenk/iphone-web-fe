@@ -23,7 +23,7 @@ export const ProductShowcaseSection: React.FC = () => {
         {/* Product Cards Grid */}
         <ErrorBoundary>
           {isLoading ? (
-            <Loading text="Loading NOVA line-up..." size="lg" />
+            <Loading message="Loading iPhone lineup..." />
           ) : isError ? (
             <div className="text-center p-12 text-red-500">Failed to load product showcase.</div>
           ) : (

@@ -1,7 +1,6 @@
 import React from "react";
 import { useProducts } from "@/features/products/hooks/useProducts";
 import { formatCurrency } from "@/utils/formatCurrency";
-import { Check, Minus } from "lucide-react";
 
 export const ComparisonSection: React.FC = () => {
   const { data: products } = useProducts();

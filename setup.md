@@ -1,1594 +1,1413 @@
-# ROLE
+Bạn đang là **Senior Frontend Engineer** có nhiều năm kinh nghiệm xây dựng hệ thống React/TypeScript production.
 
-Bạn là một **Senior Frontend Engineer + UI/UX Designer** có kinh nghiệm xây dựng các hệ thống e-commerce production với React.
+Hãy triển khai module **Authentication + API Client + Authorization + Routing** cho project **iPhoneStore Frontend**.
 
-Hãy xây dựng **Frontend Phase 1** cho một website smartphone store cao cấp có tên tạm thời là **NOVA**.
+## 1. Tech stack
 
-Website có hai mục đích:
-
-1. Product showcase / product launch website
-2. E-commerce website cho phép người dùng xem và đặt mua sản phẩm
-
-Ý tưởng bắt nguồn từ cảm giác của một website ra mắt iPhone thế hệ mới: sản phẩm đẹp, premium, tối giản, nhiều khoảng trắng, typography lớn, hình ảnh sản phẩm nổi bật và trải nghiệm giống một technology brand cao cấp.
-
-**KHÔNG clone trực tiếp website Apple.**
-
-Chỉ lấy cảm hứng từ cách trình bày sản phẩm cao cấp và tạo một visual identity riêng cho NOVA.
-
----
-
-# 1. PHẠM VI PHASE 1
-
-Ở phase này CHỈ thực hiện:
-
-* Frontend
-* Landing Page
-* Mock Data
-* Responsive UI
-* Routing architecture
-* TanStack setup
-* Zustand setup
-* shadcn/ui setup
-* Feature-based architecture
-
-CHƯA cần:
-
-* Backend
-* Database
-* Authentication thật
-* Payment
-* REST API thật
-* Admin dashboard
-* Order processing thật
-
-Tuy nhiên architecture phải được thiết kế để sau này có thể tích hợp:
-
-**React → TanStack Query → API Service → Java Spring Boot → MySQL**
-
-mà không cần refactor toàn bộ frontend.
-
----
-
-# 2. REQUIRED TECH STACK
-
-Bắt buộc:
+Project sử dụng:
 
 * React
 * TypeScript
+* Vite
+* React Router DOM
+* Axios
+* TanStack Query
+* Zustand
 * Tailwind CSS
 * shadcn/ui
-* TanStack Query
-* TanStack Router hoặc React Router
-* Zustand
-* Lucide React
 
-Nếu sử dụng thư viện bổ sung, chỉ sử dụng khi thực sự cần thiết.
+Yêu cầu code:
 
-Ưu tiên:
-
-* Type safety
-* Reusability
-* Maintainability
-* Performance
-* Clean architecture
-* Feature-based architecture
-
-Không sử dụng `any` tùy tiện.
-
----
-
-# 3. PRODUCT BRAND
-
-Tên thương hiệu:
-
-NOVA
-
-Định vị:
-
-Premium technology brand.
-
-Sản phẩm chính:
-
-* NOVA X
-* NOVA X Pro
-* NOVA X Pro Max
-
-Năm sản phẩm:
-
-2026
-
-Website dành cho người dùng Việt Nam.
-
-Currency:
-
-VND
+* Clean Code
+* SOLID
+* Separation of Concerns
+* Type-safe
+* Dễ maintain
+* Dễ mở rộng
+* Không over-engineering
+* Không viết code duplicate
+* Không hard-code logic ở nhiều nơi
+* Ưu tiên architecture phù hợp với project thực tế của một developer đi làm nhiều năm
+* Không tạo abstraction nếu chưa thực sự cần thiết
+* Không dùng `any` nếu có thể tránh
+* Không dùng `localStorage` trực tiếp rải rác trong nhiều file
+* Không gọi Axios trực tiếp trong component
 
 ---
 
-# 4. VISUAL DIRECTION
+# 2. Backend API
 
-Website phải có cảm giác:
+Backend hiện tại chạy:
 
-* Premium
-* Minimal
-* Modern
-* Futuristic
-* Clean
-* Cinematic
-* High-end
-* Technology
-* Sophisticated
+`http://localhost:8080`
 
-Không làm giống template ecommerce thông thường.
+Base API:
 
-Không tạo quá nhiều:
+`http://localhost:8080/api/v1`
 
-* Card
-* Border
-* Gradient
-* Glassmorphism
-* Animation
-* Badge
+Login API:
 
-Mỗi section phải có visual hierarchy rõ ràng.
+`POST http://localhost:8080/api/v1/auth/login`
 
----
+Request:
 
-# 5. COLOR SYSTEM
+```json
+{
+  "username": "admin",
+  "password": "123456"
+}
+```
 
-Primary:
+Response thực tế:
 
-White
+```json
+{
+  "code": 1000,
+  "result": {
+    "accessToken": "ACCESS_TOKEN",
+    "refreshToken": "REFRESH_TOKEN",
+    "authenticated": true,
+    "user": {
+      "id": "db7d657e-22ac-4c61-afbe-375297b94e32",
+      "username": "admin",
+      "email": null,
+      "roles": [
+        "ADMIN"
+      ],
+      "permissions": []
+    }
+  }
+}
+```
 
-Foreground:
+API lấy thông tin user hiện tại:
 
-Black / near-black
+`GET http://localhost:8080/api/v1/users/my-info`
 
-Dark:
+API này yêu cầu:
 
-#0b0b0f
-
-Muted:
-
-Gray
-
-Accent:
-
-Blue hoặc blue-violet rất nhẹ.
-
-Không sử dụng quá nhiều màu.
-
-Phần lớn website sử dụng:
-
-White
-Black
-Gray
-Subtle Blue
-
-Dark sections được sử dụng để tạo contrast.
+```http
+Authorization: Bearer <accessToken>
+```
 
 ---
 
-# 6. TYPOGRAPHY
+# 3. API Response Type
 
-Ưu tiên typography mang cảm giác:
+Tạo type dùng chung:
 
-Apple / Linear / Vercel / premium technology brand.
+`src/types/api.types.ts`
 
-Có thể sử dụng:
+```ts
+export interface ApiResponse<T> {
+  code: number;
+  message: string;
+  result: T;
+}
 
-Inter
-Geist
-hoặc font tương đương.
+export interface ApiError {
+  code: number;
+  message: string;
+  result: null;
+}
+```
 
-Hero typography lớn:
+Thiết kế các API khác trong tương lai đều sử dụng generic này.
 
-Desktop:
+Ví dụ:
 
-text-6xl → text-8xl
+```ts
+ApiResponse<User>
+ApiResponse<Product[]>
+ApiResponse<Product>
+ApiResponse<Category[]>
+```
 
-Mobile:
-
-text-4xl → text-5xl
-
-Typography phải responsive.
-
-Không để heading bị overflow.
+Không tạo response interface riêng nếu chỉ khác generic `result`.
 
 ---
 
-# 7. PROJECT ARCHITECTURE
+# 4. Axios architecture
 
-BẮT BUỘC sử dụng feature-based architecture.
+Tạo Axios instance dùng chung.
 
-Cấu trúc:
+Đề xuất:
 
+```text
 src/
-│
-├── app/
-│   ├── App.tsx
-│   ├── router.tsx
-│   ├── providers.tsx
-│   │
-│   └── layouts/
-│       ├── MainLayout.tsx
-│       ├── AuthLayout.tsx
-│       └── AdminLayout.tsx
-│
-├── components/
-│   ├── ui/
-│   │
-│   └── common/
-│       ├── Loading.tsx
-│       ├── ErrorBoundary.tsx
-│       └── EmptyState.tsx
-│
-├── features/
-│   │
-│   ├── home/
-│   │   ├── components/
-│   │   │   ├── HeroSection.tsx
-│   │   │   ├── FeaturedProductSection.tsx
-│   │   │   ├── ProductShowcaseSection.tsx
-│   │   │   ├── ComparisonSection.tsx
-│   │   │   ├── TechnologySection.tsx
-│   │   │   ├── CameraSection.tsx
-│   │   │   ├── PerformanceSection.tsx
-│   │   │   ├── EcosystemSection.tsx
-│   │   │   └── CTASection.tsx
-│   │   │
-│   │   ├── data/
-│   │   │   └── home.data.ts
-│   │   │
-│   │   └── index.ts
-│   │
-│   ├── products/
-│   │   ├── api/
-│   │   │   └── products.api.ts
-│   │   │
-│   │   ├── components/
-│   │   │   ├── ProductCard.tsx
-│   │   │   ├── ProductGrid.tsx
-│   │   │   ├── ProductGallery.tsx
-│   │   │   ├── ProductPrice.tsx
-│   │   │   └── ProductVariantSelector.tsx
-│   │   │
-│   │   ├── hooks/
-│   │   │   ├── useProducts.ts
-│   │   │   └── useProduct.ts
-│   │   │
-│   │   ├── types/
-│   │   │   └── product.types.ts
-│   │   │
-│   │   └── index.ts
-│   │
-│   ├── cart/
-│   │
-│   ├── checkout/
-│   │
-│   ├── orders/
-│   │
-│   ├── wishlist/
-│   │
-│   └── auth/
-│       ├── api/
-│       ├── components/
-│       ├── hooks/
-│       ├── stores/
-│       ├── types/
-│       └── index.ts
-│
 ├── services/
 │   └── api/
-│       ├── client.ts
+│       ├── axios.ts
 │       ├── interceptors.ts
-│       └── api.types.ts
-│
-├── constants/
-│   ├── routes.ts
-│   └── storageKeys.ts
-│
-├── hooks/
-│   ├── useDebounce.ts
-│   └── useMediaQuery.ts
-│
+│       └── index.ts
+```
+
+Hoặc nếu architecture hiện tại của project phù hợp hơn thì có thể điều chỉnh.
+
+Axios instance phải có:
+
+```ts
+baseURL: import.meta.env.VITE_API_BASE_URL
+```
+
+Tạo `.env`:
+
+```env
+VITE_API_BASE_URL=http://localhost:8080/api/v1
+```
+
+Không hard-code base URL trong source code.
+
+---
+
+# 5. Axios Request Interceptor
+
+Mỗi request authenticated phải tự động thêm:
+
+```http
+Authorization: Bearer <accessToken>
+```
+
+Access token được lấy từ auth store/token storage.
+
+Không được viết:
+
+```ts
+axios.get(...)
+```
+
+rải rác trong project.
+
+Tất cả request phải đi qua Axios instance.
+
+Ví dụ:
+
+```ts
+apiClient.get(...)
+apiClient.post(...)
+apiClient.put(...)
+apiClient.delete(...)
+```
+
+---
+
+# 6. Axios Response Interceptor
+
+Xử lý centralized:
+
+* HTTP 401
+* HTTP 403
+* HTTP 404
+* HTTP 500
+* Network error
+* Backend `code` khác `1000`
+
+Đặc biệt:
+
+### 401
+
+Nếu access token hết hạn:
+
+* thử refresh token nếu backend có refresh API
+* nếu refresh thất bại:
+
+  * clear authentication
+  * redirect về `/login`
+
+Không redirect trực tiếp từ mọi API service.
+
+Logic authentication phải được centralized.
+
+### 403
+
+Không logout user.
+
+Chuyển đến:
+
+`/403`
+
+### 404
+
+Không nhất thiết redirect tất cả API 404 sang NotFoundPage.
+
+Phân biệt:
+
+* API resource không tồn tại
+* Route frontend không tồn tại
+
+Frontend route không tồn tại phải sử dụng:
+
+`NotFoundPage`
+
+---
+
+# 7. Token storage
+
+Thiết kế một nơi duy nhất để quản lý token.
+
+Ví dụ:
+
+```text
+src/features/auth/
 ├── stores/
-│   └── app.store.ts
-│
-├── types/
-│   └── common.types.ts
-│
-├── utils/
-│   ├── cn.ts
-│   ├── formatCurrency.ts
-│   └── formatDate.ts
-│
-├── config/
-│   ├── env.ts
-│   └── app.config.ts
-│
-├── assets/
-│
-└── main.tsx
+│   └── auth.store.ts
+├── services/
+│   └── token.service.ts
+```
+
+Không được sử dụng:
+
+```ts
+localStorage.setItem(...)
+localStorage.getItem(...)
+```
+
+ở nhiều component khác nhau.
+
+Tạo abstraction:
+
+```ts
+getAccessToken()
+setAccessToken()
+getRefreshToken()
+setRefreshToken()
+clearTokens()
+```
+
+Có thể sử dụng Zustand persist nếu hợp lý.
+
+Ưu tiên thiết kế đơn giản, rõ ràng và dễ thay đổi storage strategy sau này.
 
 ---
 
-# 8. ARCHITECTURE RULES
+# 8. Auth Types
 
-Tuân thủ các nguyên tắc sau.
+Tạo:
 
-## components/
+`src/features/auth/types/auth.types.ts`
 
-Chỉ chứa component dùng chung.
+Bao gồm:
 
-Ví dụ:
+```ts
+export interface LoginRequest {
+  username: string;
+  password: string;
+}
 
-* Button
-* Loading
-* EmptyState
-* ErrorBoundary
+export interface AuthUser {
+  id: string;
+  username: string;
+  email: string | null;
+  roles: string[];
+  permissions: string[];
+}
 
-Không đặt business component vào đây.
+export interface LoginResult {
+  accessToken: string;
+  refreshToken: string;
+  authenticated: boolean;
+  user: AuthUser;
+}
+```
 
-Sai:
-
-components/common/ProductCard.tsx
-
-Đúng:
-
-features/products/components/ProductCard.tsx
-
----
-
-## features/
-
-Mỗi feature là một business domain độc lập.
-
-Ví dụ:
-
-features/products
-
-features/cart
-
-features/checkout
-
-features/orders
-
-features/auth
-
-Không import ngược lung tung giữa các feature.
+Có thể tạo thêm các type cần thiết nếu thực sự cần.
 
 ---
 
-## services/
+# 9. Auth API
 
-Chỉ chịu trách nhiệm infrastructure/API.
+Tạo:
 
-Không chứa business UI logic.
+```text
+src/features/auth/api/auth.api.ts
+```
 
----
+Implement:
 
-## hooks/
+```ts
+login()
+```
 
-Chỉ chứa global hooks.
+API:
 
-Ví dụ:
+```http
+POST /auth/login
+```
 
-useDebounce
-useMediaQuery
+Request:
 
-Hook liên quan đến product phải nằm:
+```json
+{
+  "username": "admin",
+  "password": "123456"
+}
+```
 
-features/products/hooks/
+Return:
 
-Hook liên quan cart phải nằm:
+```ts
+Promise<ApiResponse<LoginResult>>
+```
 
-features/cart/hooks/
-
----
-
-## stores/
-
-Chỉ chứa global Zustand stores.
-
-Business-specific Zustand store nên nằm trong feature.
-
-Ví dụ:
-
-features/cart/stores/cart.store.ts
-
-features/auth/stores/auth.store.ts
+Không gọi API trực tiếp trong LoginForm.
 
 ---
 
-# 9. TANSTACK QUERY
+# 10. TanStack Query
 
 Sử dụng **TanStack Query** để quản lý server state.
 
-Ngay cả khi Phase 1 đang dùng mock data, hãy chuẩn bị architecture đúng.
+Không dùng Zustand để lưu server state.
+
+Phân biệt rõ:
+
+### Zustand
+
+Dùng cho client/auth state:
+
+* access token
+* refresh token
+* authenticated
+* current user
+* logout
+* auth status
+
+### TanStack Query
+
+Dùng cho server state:
+
+* login mutation
+* my-info query
+* products
+* categories
+* orders
+* etc.
+
+---
+
+# 11. Login Hook
+
+Tạo:
+
+```text
+src/features/auth/hooks/useLogin.ts
+```
+
+Sử dụng:
+
+```ts
+useMutation()
+```
+
+Flow:
+
+```text
+LoginForm
+    ↓
+useLogin()
+    ↓
+auth.api.login()
+    ↓
+Backend
+    ↓
+ApiResponse<LoginResult>
+    ↓
+save token
+    ↓
+update auth store
+    ↓
+navigate
+```
+
+Không để LoginForm tự xử lý token.
+
+---
+
+# 12. Logout Hook
+
+Tạo:
+
+```text
+src/features/auth/hooks/useLogout.ts
+```
+
+Logout phải:
+
+* clear access token
+* clear refresh token
+* reset auth Zustand store
+* clear/invalidate TanStack Query cache nếu cần
+* redirect về `/login`
+
+---
+
+# 13. My Info API
+
+Tạo:
+
+```text
+src/features/auth/api/auth.api.ts
+```
+
+hoặc:
+
+```text
+src/features/users/api/user.api.ts
+```
+
+API:
+
+```http
+GET /users/my-info
+```
+
+Response:
+
+```ts
+ApiResponse<AuthUser>
+```
+
+Tạo hook:
+
+```text
+src/features/auth/hooks/useMyInfo.ts
+```
+
+sử dụng:
+
+```ts
+useQuery()
+```
+
+Không fetch `/my-info` trực tiếp trong component.
+
+---
+
+# 14. Authentication initialization
+
+Khi application khởi động:
+
+```text
+App
+ ↓
+Auth initialization
+ ↓
+check accessToken
+ ↓
+GET /users/my-info
+ ↓
+success → authenticated
+ ↓
+401 → clear auth
+```
+
+Mục tiêu:
+
+Nếu user refresh trình duyệt:
+
+```text
+F5
+```
+
+thì frontend vẫn biết user hiện tại là ai.
+
+Không được gọi `/users/my-info` liên tục mỗi lần component render.
+
+TanStack Query phải có:
+
+* `queryKey`
+* `staleTime`
+* `retry` hợp lý
+* `enabled` hợp lý
+
+---
+
+# 15. Zustand Auth Store
+
+Tạo:
+
+```text
+src/features/auth/stores/auth.store.ts
+```
+
+State nên có:
+
+```ts
+interface AuthState {
+  user: AuthUser | null;
+  isAuthenticated: boolean;
+  setUser: (user: AuthUser) => void;
+  clearAuth: () => void;
+}
+```
+
+Không lưu toàn bộ server state vào Zustand nếu TanStack Query đã quản lý.
+
+Store chỉ chịu trách nhiệm cho authentication/client state.
+
+---
+
+# 16. Role System
+
+Hệ thống hiện tại có 3 nhóm role:
+
+```text
+USER
+STAFF
+ADMIN
+```
+
+Có thể define:
+
+```ts
+export enum UserRole {
+  USER = "USER",
+  STAFF = "STAFF",
+  ADMIN = "ADMIN",
+}
+```
+
+Không hard-code string role ở nhiều component.
+
+---
+
+# 17. Router Architecture
+
+Thiết kế router rõ ràng cho:
+
+```text
+Public
+User
+Staff
+Admin
+```
 
 Ví dụ:
 
-features/products/api/products.api.ts
+```text
+/
+├── login
+├── 403
+├── *
+│
+├── user routes
+│   ├── /
+│   ├── /products
+│   ├── /products/:slug
+│   ├── /cart
+│   └── /orders
+│
+├── staff routes
+│   └── /staff/*
+│
+└── admin routes
+    └── /admin/*
+```
 
-```ts
-getProducts()
-getProductById(id)
+Có thể điều chỉnh URL structure nếu architecture hiện tại hợp lý hơn.
+
+---
+
+# 18. ProtectedRoute
+
+Tạo:
+
+```text
+src/components/common/ProtectedRoute.tsx
+```
+
+Chức năng:
+
+* User chưa login → `/login`
+* User đã login → render children
+* Đang initialize auth → render Loading
+
+Ví dụ concept:
+
+```tsx
+<ProtectedRoute>
+  <UserLayout />
+</ProtectedRoute>
+```
+
+Không duplicate logic authentication ở từng page.
+
+---
+
+# 19. RoleRoute
+
+Tạo:
+
+```text
+src/components/common/RoleRoute.tsx
+```
+
+Cho phép kiểm tra role.
+
+Ví dụ:
+
+```tsx
+<RoleRoute allowedRoles={[UserRole.ADMIN]}>
+  <AdminLayout />
+</RoleRoute>
+```
+
+Staff:
+
+```tsx
+<RoleRoute allowedRoles={[UserRole.STAFF]}>
+  <StaffLayout />
+</RoleRoute>
+```
+
+Có thể hỗ trợ nhiều role:
+
+```tsx
+<RoleRoute
+  allowedRoles={[UserRole.ADMIN, UserRole.STAFF]}
+>
+```
+
+Nếu authenticated nhưng không có quyền:
+
+```text
+/403
+```
+
+Không redirect về `/login`.
+
+---
+
+# 20. Route hierarchy
+
+Ưu tiên cấu trúc route dễ mở rộng.
+
+Ví dụ:
+
+```tsx
+<Routes>
+
+  <Route element={<PublicLayout />}>
+    <Route path="/login" element={<LoginPage />} />
+  </Route>
+
+  <Route element={<ProtectedRoute />}>
+
+    <Route element={<UserLayout />}>
+      ...
+    </Route>
+
+    <Route
+      path="/staff"
+      element={
+        <RoleRoute allowedRoles={[UserRole.STAFF]} />
+      }
+    >
+      ...
+    </Route>
+
+    <Route
+      path="/admin"
+      element={
+        <RoleRoute allowedRoles={[UserRole.ADMIN]} />
+      }
+    >
+      ...
+    </Route>
+
+  </Route>
+
+  <Route path="/403" element={<ForbiddenPage />} />
+  <Route path="*" element={<NotFoundPage />} />
+
+</Routes>
+```
+
+Hãy chọn implementation phù hợp nhất với React Router version đang sử dụng.
+
+---
+
+# 21. Pages
+
+Tạo:
+
+```text
+src/pages/
+├── auth/
+│   └── LoginPage.tsx
+├── errors/
+│   ├── ForbiddenPage.tsx
+│   └── NotFoundPage.tsx
+├── user/
+├── staff/
+└── admin/
+```
+
+### LoginPage
+
+Có:
+
+* username
+* password
+* loading state
+* error message
+* submit
+* redirect sau login
+
+Không xử lý Axios trực tiếp.
+
+---
+
+# 22. NotFoundPage
+
+Tạo UI đẹp, tối giản, phù hợp với iPhoneStore.
+
+Hiển thị:
+
+```text
+404
+
+Trang không tồn tại
+
+Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển.
+
+Quay về trang chủ
+```
+
+Có button:
+
+```text
+Về trang chủ
+```
+
+---
+
+# 23. ForbiddenPage
+
+Tạo:
+
+```text
+403
+
+Bạn không có quyền truy cập
+
+Bạn không có quyền truy cập trang này.
+
+Quay về trang chủ
+```
+
+Có thể có:
+
+```text
+Quay lại
 ```
 
 và:
 
-```ts
-useProducts()
-useProduct(id)
+```text
+Về trang chủ
 ```
 
-sử dụng TanStack Query.
+---
 
-Mock implementation có thể trả về Promise:
+# 24. Loading
 
-```ts
-return Promise.resolve(mockProducts)
-```
-
-Mục tiêu:
-
-Sau này chỉ cần thay implementation:
+Sử dụng component:
 
 ```text
-Mock Data
-↓
-API Client
-↓
-Spring Boot REST API
+src/components/common/Loading.tsx
 ```
 
-mà component không cần thay đổi.
+Dùng cho:
+
+* Auth initialization
+* Login mutation
+* Route protection
+* Page loading
+
+Không tạo quá nhiều loading component khác nhau nếu không cần.
 
 ---
 
-# 10. ZUSTAND
+# 25. App Providers
 
-Sử dụng Zustand cho **client state**, không sử dụng Zustand thay cho TanStack Query.
+Tạo/hoàn thiện:
 
-Ví dụ những thứ phù hợp với Zustand:
-
-* Cart
-* Wishlist
-* UI state
-* Mobile menu
-* User preferences
-
-Không dùng Zustand để lưu server data nếu TanStack Query đã phù hợp.
-
-Ví dụ tương lai:
-
-features/cart/stores/cart.store.ts
-
-State:
-
-```ts
-items
-addItem()
-removeItem()
-updateQuantity()
-clearCart()
-getTotal()
+```text
+src/app/providers.tsx
 ```
 
-Ở Phase 1 có thể chưa implement toàn bộ cart UI nhưng store architecture nên được chuẩn bị.
+Bao gồm:
 
----
-
-# 11. TANSTACK QUERY VS ZUSTAND
-
-Tuân thủ:
-
-TanStack Query:
-
-Server State
-
-* Products
-* Product Detail
-* Orders
-* User profile
-* API data
-
-Zustand:
-
-Client State
-
-* Cart
-* Wishlist
-* UI preferences
-* Local interaction state
-
-Không trộn hai loại state.
-
----
-
-# 12. MOCK DATA
-
-Tạo mock data có type rõ ràng.
-
-Ví dụ:
-
-features/products/data/products.mock.ts
-
-```ts
-export const mockProducts: Product[] = [
-  {
-    id: "nova-x",
-    name: "NOVA X",
-    tagline: "Power meets simplicity.",
-    description: "...",
-    price: 24990000,
-    currency: "VND",
-    images: [],
-    colors: [],
-    storage: ["128GB", "256GB"],
-    specifications: {
-      display: "6.3-inch OLED",
-      chip: "NOVA A1",
-      camera: "48MP",
-      battery: "Up to 28 hours"
-    }
-  }
-]
+```text
+QueryClientProvider
 ```
 
-Không hard-code product data trong JSX.
-
----
-
-# 13. PRODUCT TYPES
-
-Tạo:
-
-features/products/types/product.types.ts
-
-Ví dụ:
-
-```ts
-export interface Product {
-  id: string
-  name: string
-  tagline: string
-  description: string
-  price: number
-  currency: string
-  images: string[]
-  colors: ProductColor[]
-  storage: string[]
-  specifications: ProductSpecifications
-}
-
-export interface ProductColor {
-  name: string
-  value: string
-}
-
-export interface ProductSpecifications {
-  display: string
-  chip: string
-  camera: string
-  battery: string
-}
-```
-
-Có thể mở rộng type khi cần.
-
----
-
-# 14. LANDING PAGE
-
-Landing page route:
-
-/
+và các provider khác nếu cần.
 
 Cấu trúc:
 
-```tsx
-<HomePage>
-
-  <HeroSection />
-
-  <FeaturedProductSection />
-
-  <ProductShowcaseSection />
-
-  <ComparisonSection />
-
-  <TechnologySection />
-
-  <CameraSection />
-
-  <PerformanceSection />
-
-  <EcosystemSection />
-
-  <CTASection />
-
-</HomePage>
-```
-
-Không tạo Home page thành một file khổng lồ.
-
----
-
-# 15. HEADER
-
-Header phải premium và minimal.
-
-Desktop:
-
-NOVA
-
-Navigation:
-
-Store
-iPhone
-Accessories
-Compare
-Support
-
-Right:
-
-Search
-Cart
-Account
-
-Icons sử dụng Lucide.
-
-Header:
-
-* sticky
-* backdrop blur nhẹ
-* border-bottom subtle
-* transition khi scroll
-
-Mobile:
-
-Logo
-Cart
-Menu
-
-Mobile menu sử dụng shadcn/ui Sheet.
-
----
-
-# 16. HERO
-
-Hero là section quan trọng nhất.
-
-Content:
-
-NOVA X
-
-"Designed beyond imagination."
-
-Description:
-
-"Powerful performance. Intelligent photography. A completely new smartphone experience."
-
-Buttons:
-
-"Buy now"
-
-"Explore"
-
-Hero image:
-
-Product render lớn.
-
-Nếu chưa có product assets:
-
-Tạo một product placeholder đẹp bằng layout/CSS.
-
-KHÔNG sử dụng ảnh stock ngẫu nhiên chất lượng thấp.
-
-Product phải là visual focal point.
-
-Hero nên có cảm giác:
-
-"New flagship smartphone launch."
-
----
-
-# 17. FEATURED PRODUCT
-
-Sản phẩm:
-
-NOVA X Pro
-
-Headline:
-
-"Meet NOVA X Pro."
-
-Hiển thị:
-
-* Display
-* Chip
-* Camera
-* Battery
-* Storage
-* Starting price
-
-Có product image lớn.
-
-CTA:
-
-"Buy NOVA X Pro"
-
-"Learn more"
-
----
-
-# 18. PRODUCT SHOWCASE
-
-Hiển thị 3 sản phẩm:
-
-NOVA X
-NOVA X Pro
-NOVA X Pro Max
-
-Sử dụng:
-
-<ProductCard />
-
-Không duplicate markup.
-
-Mỗi card:
-
-* Product image
-* Product name
-* tagline
-* starting price
-* color selector
-* Learn more
-* Buy
-
----
-
-# 19. COMPARISON
-
-Headline:
-
-"Which NOVA is right for you?"
-
-So sánh:
-
-* Display
-* Chip
-* Camera
-* Battery
-* Storage
-* Price
-
-Sử dụng shadcn/ui Table nếu phù hợp.
-
-Mobile phải responsive.
-
----
-
-# 20. TECHNOLOGY
-
-Headline:
-
-"Built for what’s next."
-
-Features:
-
-* NOVA A1 Pro Chip
-* AI Engine
-* OLED Display
-* Pro Camera
-* Fast Charging
-* Privacy & Security
-
-Mỗi feature:
-
-Icon
-Title
-Description
-
-Không biến tất cả thành những card giống nhau.
-
-Có thể sử dụng editorial layout.
-
----
-
-# 21. CAMERA
-
-Dark hoặc cinematic section.
-
-Headline:
-
-"Every detail. Captured."
-
-Content:
-
-48MP Pro Camera
-
-"Capture more detail in every frame."
-
-Product/camera image lớn.
-
-Section phải có visual impact mạnh.
-
----
-
-# 22. PERFORMANCE
-
-Dark section:
-
-Background:
-
-#0b0b0f
-
-Headline:
-
-"Performance without compromise."
-
-Hiển thị:
-
-CPU
-GPU
-AI
-Battery
-
-Có thể dùng large typography + statistics.
-
-Animation nhẹ.
-
----
-
-# 23. ECOSYSTEM
-
-Giới thiệu:
-
-NOVA Watch
-NOVA Buds
-NOVA Pad
-NOVA Cloud
-
-Headline:
-
-"Everything works beautifully together."
-
-Mục tiêu là tạo cảm giác NOVA đang xây dựng ecosystem.
-
----
-
-# 24. CTA
-
-Cuối landing page:
-
-"Your next device starts here."
-
-Buttons:
-
-"Shop NOVA"
-
-"Explore products"
-
----
-
-# 25. FOOTER
-
-Footer chuyên nghiệp.
-
-Products:
-
-NOVA X
-NOVA X Pro
-NOVA X Pro Max
-NOVA Watch
-NOVA Buds
-
-Store:
-
-Shop
-Compare
-Accessories
-
-Support:
-
-Contact
-Warranty
-Shipping
-FAQ
-
-Company:
-
-About
-Careers
-Privacy
-Terms
-
-Bottom:
-
-© 2026 NOVA. All rights reserved.
-
----
-
-# 26. ROUTING
-
-Chuẩn bị:
-
-/
-/products
-/products/:id
-/cart
-/checkout
-/login
-/register
-/orders
-
-Phase 1 chỉ cần `/` hoàn thiện.
-
-Các route khác có thể là placeholder.
-
-Không hard-code route string trong component.
-
-Sử dụng:
-
-constants/routes.ts
-
----
-
-# 27. FORMAT CURRENCY
-
-Website Việt Nam.
-
-Tạo:
-
-utils/formatCurrency.ts
-
-Ví dụ:
-
-```ts
-formatCurrency(29990000)
-```
-
-Output:
-
 ```text
-29.990.000 ₫
+main.tsx
+    ↓
+App
+    ↓
+Providers
+    ↓
+Router
 ```
 
-Không format giá trực tiếp trong JSX.
-
 ---
 
-# 28. SHADCN/UI
+# 26. QueryClient
 
-Sử dụng shadcn/ui cho những component phù hợp:
-
-* Button
-* Sheet
-* Dialog
-* Table
-* Badge
-* Separator
-* Tooltip
-* Dropdown
-* Input
-
-Không lạm dụng shadcn.
-
-Các section marketing nên có custom design riêng.
-
----
-
-# 29. RESPONSIVE
-
-Bắt buộc:
-
-375px
-640px
-768px
-1024px
-1280px
-1440px+
-
-Mobile-first.
-
-Không có:
-
-* horizontal scroll
-* overflow
-* broken grid
-* text clipping
-* distorted image
-* tiny touch target
-
----
-
-# 30. ANIMATION
-
-Animation phải subtle.
-
-Có thể sử dụng Motion / Framer Motion nếu cần.
-
-Các animation phù hợp:
-
-* Hero fade-in
-* Product image reveal
-* Scroll reveal
-* Hover scale
-* Button interaction
-* Navbar transition
-
-Không tạo animation quá nặng.
-
-Không biến landing page thành website animation demo.
-
-Mục tiêu:
-
-Premium + Smooth + Restrained.
-
----
-
-# 31. ACCESSIBILITY
-
-Bắt buộc:
-
-* Semantic HTML
-* alt text
-* aria-label
-* keyboard navigation
-* focus states
-* readable contrast
-
-Icon-only buttons phải có:
-
-aria-label
-
----
-
-# 32. PERFORMANCE
-
-Ưu tiên:
-
-* lazy image loading
-* code splitting nếu cần
-* tránh unnecessary re-render
-* tối ưu React rendering
-* không import library không cần thiết
-* tránh animation nặng
-
----
-
-# 33. API ARCHITECTURE CHO SPRING BOOT SAU NÀY
-
-Frontend phải có abstraction:
-
-```text
-UI
-↓
-Feature Hook
-↓
-Feature API
-↓
-API Client
-↓
-REST API
-```
-
-Ví dụ:
-
-```text
-ProductCard
-↓
-useProducts()
-↓
-products.api.ts
-↓
-services/api/client.ts
-↓
-GET /api/products
-↓
-Spring Boot
-```
+Tạo một QueryClient duy nhất.
 
 Không được:
 
-```text
-Component
-↓
-axios.get(...)
+```ts
+new QueryClient()
 ```
 
-trực tiếp.
+mỗi lần render.
 
----
-
-# 34. FUTURE BACKEND
-
-Backend dự kiến:
-
-Java
-Spring Boot
-Spring Security
-MySQL
-REST API
-JWT
-JPA/Hibernate
-
-Frontend cần chuẩn bị để sau này tích hợp:
-
-GET /api/products
-
-GET /api/products/{id}
-
-POST /api/cart
-
-POST /api/orders
-
-GET /api/orders
-
-POST /api/auth/login
-
-POST /api/auth/register
-
----
-
-# 35. ERROR HANDLING
-
-Chuẩn bị:
-
-* Loading state
-* Error state
-* Empty state
-
-TanStack Query phải xử lý:
-
-isLoading
-isError
-data
-
-Không để UI crash khi API/mock data lỗi.
-
----
-
-# 36. ENVIRONMENT CONFIG
-
-Tạo:
-
-config/env.ts
-
-Ví dụ:
+Configure hợp lý:
 
 ```ts
-API_BASE_URL
+staleTime
+gcTime
+retry
+refetchOnWindowFocus
 ```
 
-Không hard-code:
+Đối với authentication:
+
+* Không retry vô hạn khi API trả 401.
+* Không retry các lỗi authentication không cần thiết.
+
+---
+
+# 27. API Error handling
+
+Tạo centralized error handling.
+
+Ví dụ backend trả:
+
+```json
+{
+  "code": 1041,
+  "message": "Username đã tồn tại!",
+  "result": null
+}
+```
+
+Frontend phải có thể lấy:
+
+```ts
+error.code
+error.message
+```
+
+Không chỉ dựa vào HTTP status.
+
+Tạo custom error class nếu cần:
+
+```ts
+class ApiException extends Error {
+  code: number;
+  ...
+}
+```
+
+Nhưng chỉ sử dụng nếu thực sự giúp code sạch hơn.
+
+---
+
+# 28. Folder structure mong muốn
+
+Sau khi hoàn thành, hướng tới:
+
+```text
+src/
+├── app/
+│   ├── App.tsx
+│   ├── router.tsx
+│   ├── providers.tsx
+│   └── layouts/
+│       ├── PublicLayout.tsx
+│       ├── UserLayout.tsx
+│       ├── StaffLayout.tsx
+│       └── AdminLayout.tsx
+│
+├── components/
+│   ├── ui/
+│   └── common/
+│       ├── ProtectedRoute.tsx
+│       ├── RoleRoute.tsx
+│       ├── Loading.tsx
+│       └── ErrorBoundary.tsx
+│
+├── features/
+│   └── auth/
+│       ├── api/
+│       │   └── auth.api.ts
+│       ├── components/
+│       │   └── LoginForm.tsx
+│       ├── hooks/
+│       │   ├── useLogin.ts
+│       │   ├── useLogout.ts
+│       │   └── useMyInfo.ts
+│       ├── stores/
+│       │   └── auth.store.ts
+│       ├── types/
+│       │   └── auth.types.ts
+│       └── index.ts
+│
+├── pages/
+│   ├── auth/
+│   │   └── LoginPage.tsx
+│   ├── errors/
+│   │   ├── ForbiddenPage.tsx
+│   │   └── NotFoundPage.tsx
+│   ├── user/
+│   ├── staff/
+│   └── admin/
+│
+├── services/
+│   └── api/
+│       ├── axios.ts
+│       ├── interceptors.ts
+│       └── index.ts
+│
+├── types/
+│   └── api.types.ts
+│
+├── lib/
+│   └── utils.ts
+│
+└── main.tsx
+```
+
+Không nhất thiết phải tạo đúng 100% structure trên nếu project hiện tại đã có structure tốt hơn. Hãy ưu tiên tính nhất quán của toàn project.
+
+---
+
+# 29. Authentication flow bắt buộc
+
+Implement flow sau:
+
+```text
+User
+ │
+ ▼
+LoginPage
+ │
+ ▼
+LoginForm
+ │
+ ▼
+useLogin()
+ │
+ ▼
+TanStack Mutation
+ │
+ ▼
+auth.api.login()
+ │
+ ▼
+POST /auth/login
+ │
+ ▼
+Backend
+ │
+ ▼
+accessToken + refreshToken + user
+ │
+ ├── save token
+ ├── set auth store
+ └── navigate
+        │
+        ├── ADMIN → /admin
+        ├── STAFF → /staff
+        └── USER  → /
+```
+
+---
+
+# 30. Refresh browser flow
+
+Khi user đã login:
+
+```text
+F5
+ │
+ ▼
+Application start
+ │
+ ▼
+Auth initialization
+ │
+ ▼
+accessToken exists?
+ │
+ ├── NO → unauthenticated
+ │
+ └── YES
+       │
+       ▼
+GET /users/my-info
+       │
+       ├── 200 → set current user
+       │
+       └── 401 → clear authentication
+```
+
+Không để F5 làm user bị logout nếu access token vẫn hợp lệ.
+
+---
+
+# 31. Role redirect
+
+Sau login:
+
+```text
+ADMIN
+→ /admin
+
+STAFF
+→ /staff
+
+USER
+→ /
+```
+
+Nếu user truy cập:
+
+```text
+/admin
+```
+
+nhưng role là:
+
+```text
+USER
+```
+
+thì:
+
+```text
+/admin
+ ↓
+ProtectedRoute → authenticated
+ ↓
+RoleRoute → role không hợp lệ
+ ↓
+/403
+```
+
+Nếu chưa login:
+
+```text
+/admin
+ ↓
+/login
+```
+
+---
+
+# 32. Security considerations
+
+Đây là project portfolio nhưng hãy code theo tư duy production.
+
+Chú ý:
+
+* Không log accessToken
+* Không log refreshToken
+* Không đưa token vào URL
+* Không hard-code credential
+* Không commit `.env` chứa secret
+* `.env` chỉ chứa config public như API URL
+* Không lưu password
+* Không expose token trong UI
+* Không duplicate authentication logic
+
+Nếu refresh token API chưa tồn tại ở backend thì **không tự bịa endpoint**.
+
+Có thể thiết kế abstraction để sau này thêm:
+
+```text
+POST /auth/refresh
+```
+
+nhưng hiện tại chỉ implement những API backend thực sự tồn tại.
+
+---
+
+# 33. CORS
+
+Nếu frontend chạy:
+
+```text
+http://localhost:5173
+```
+
+và backend:
 
 ```text
 http://localhost:8080
 ```
 
-trong component.
+hãy đảm bảo Axios configuration không phá CORS.
 
-Có thể sử dụng:
+Không xử lý CORS bằng frontend hack.
 
-```text
-VITE_API_BASE_URL
-```
-
----
-
-# 37. IMPORT RULES
-
-Ưu tiên absolute imports:
-
-```ts
-@/features/products
-@/components/ui/button
-@/utils/formatCurrency
-```
-
-Không sử dụng relative import quá sâu như:
-
-```ts
-../../../../components/...
-```
-
----
-
-# 38. FEATURE BARREL EXPORT
-
-Mỗi feature có:
-
-index.ts
-
-Ví dụ:
-
-```ts
-export * from "./components/ProductCard"
-export * from "./hooks/useProducts"
-export * from "./types/product.types"
-```
-
-Nhưng không tạo barrel file nếu nó gây circular dependency.
-
-Ưu tiên rõ ràng hơn là over-engineering.
-
----
-
-# 39. CODE STYLE
-
-Yêu cầu:
-
-* Clean code
-* SOLID ở mức phù hợp frontend
-* DRY nhưng không over-abstract
-* Component nhỏ
-* Single responsibility
-* Type-safe
-* Naming rõ ràng
-
-Không tạo abstraction chỉ để làm code "trông chuyên nghiệp".
-
-Architecture phải phục vụ việc phát triển thực tế.
-
----
-
-# 40. IMPORTANT — KHÔNG OVER-ENGINEERING
-
-Đây là project portfolio dành cho Fresher/Junior.
-
-Không tạo:
-
-* Repository pattern frontend
-* Factory pattern không cần thiết
-* Dependency injection framework
-* quá nhiều generic abstraction
-* quá nhiều layer không có giá trị
-
-Giữ architecture:
-
-**Professional nhưng dễ hiểu.**
-
-Một developer khác clone project phải có thể đọc và hiểu structure nhanh chóng.
-
----
-
-# 41. DATA FLOW PHASE 1
-
-Hiện tại:
+Nếu cần, ghi chú rõ backend Spring Boot cần allow origin:
 
 ```text
-Mock Data
-↓
-TanStack Query
-↓
-Feature Hook
-↓
-Component
+http://localhost:5173
 ```
 
-Ví dụ:
+---
+
+# 34. UX
+
+Login phải có:
+
+* Loading khi submit
+* Disable button khi đang login
+* Hiển thị lỗi API
+* Hiển thị lỗi validation
+* Không submit nhiều lần
+* Redirect đúng role
+
+Không để UI bị flicker:
 
 ```text
-products.mock.ts
-        ↓
-products.api.ts
-        ↓
-useProducts.ts
-        ↓
-ProductShowcaseSection
-        ↓
-ProductCard
+login → dashboard → loading → login
 ```
 
-Sau này:
+---
+
+# 35. Code quality
+
+Sau khi implement:
+
+* Kiểm tra TypeScript compile
+* Kiểm tra ESLint
+* Không còn `any` không cần thiết
+* Không còn import thừa
+* Không còn console.log debug
+* Không duplicate API logic
+* Không duplicate auth logic
+* Kiểm tra circular dependency
+* Kiểm tra router
+* Kiểm tra protected route
+* Kiểm tra role route
+
+---
+
+# 36. Acceptance Criteria
+
+Chức năng được xem là hoàn thành khi:
+
+### Case 1
+
+Login đúng:
 
 ```text
-Spring Boot API
-        ↓
-products.api.ts
-        ↓
-useProducts.ts
-        ↓
-ProductShowcaseSection
-        ↓
-ProductCard
+admin / 123456
 ```
 
-UI không cần thay đổi.
-
----
-
-# 42. ZUSTAND DATA FLOW
-
-Cart trong tương lai:
+→ gọi:
 
 ```text
-ProductCard
-     ↓
-addItem()
-     ↓
-Zustand Cart Store
-     ↓
-Cart Page
+POST /auth/login
 ```
 
-Không lưu cart vào TanStack Query.
+→ lưu token
 
-Có thể persist cart bằng Zustand persist middleware sau này.
+→ lưu user
+
+→ `/admin`
+
+### Case 2
+
+User login:
+
+```text
+USER
+```
+
+→ `/`
+
+### Case 3
+
+Staff login:
+
+```text
+STAFF
+```
+
+→ `/staff`
+
+### Case 4
+
+Chưa login truy cập:
+
+```text
+/admin
+```
+
+→ `/login`
+
+### Case 5
+
+USER truy cập:
+
+```text
+/admin
+```
+
+→ `/403`
+
+### Case 6
+
+STAFF truy cập:
+
+```text
+/admin
+```
+
+→ `/403`
+
+### Case 7
+
+Admin truy cập:
+
+```text
+/admin
+```
+
+→ cho phép
+
+### Case 8
+
+F5 sau khi login:
+
+```text
+F5
+```
+
+→ gọi:
+
+```text
+GET /users/my-info
+```
+
+→ khôi phục authentication.
+
+### Case 9
+
+Truy cập route không tồn tại:
+
+```text
+/random-page
+```
+
+→ `NotFoundPage`
+
+### Case 10
+
+API trả 401:
+
+→ xử lý centralized
+
+→ clear auth nếu không thể refresh
+
+→ `/login`
 
 ---
 
-# 43. DESIGN DETAILS
+# 37. Quan trọng
 
-Hãy ưu tiên những yếu tố sau:
+**Trước khi code:**
 
-### Hero
+1. Đọc toàn bộ structure hiện tại của project.
+2. Kiểm tra các package đã cài.
+3. Kiểm tra React Router version.
+4. Kiểm tra Axios version.
+5. Kiểm tra TanStack Query version.
+6. Kiểm tra Zustand version.
+7. Kiểm tra các file auth hiện có.
+8. Không tạo file trùng với file đã tồn tại.
+9. Không phá vỡ các feature hiện tại.
+10. Nếu cần thay đổi architecture, hãy ưu tiên migration nhỏ và hợp lý.
 
-Large typography
-Large product image
-Lots of whitespace
+Sau đó:
 
-### Product
+### Bước 1
 
-Large product photography
-Minimal information
-Clear CTA
+Dựng:
 
-### Dark section
+```text
+Axios
+API types
+Token service
+Interceptors
+```
 
-High contrast
-Large typography
-Premium cinematic feeling
+### Bước 2
 
-### Ecosystem
+Dựng:
 
-Editorial composition
+```text
+Auth types
+Auth API
+Zustand Auth Store
+TanStack Query hooks
+```
 
-### CTA
+### Bước 3
 
-Very minimal.
+Dựng:
 
----
+```text
+LoginPage
+LoginForm
+Logout
+My Info
+```
 
-# 44. DO NOT
+### Bước 4
 
-Không:
+Dựng:
 
-* Clone Apple website
-* Copy Apple logo
-* Copy Apple exact wording
-* Copy exact layout
-* Dùng Apple logo làm brand
-* Dùng random stock images
-* Hard-code product data trong JSX
-* Hard-code API URL
-* Dùng Zustand cho server state
-* Dùng TanStack Query cho client UI state
-* Tạo Home.tsx hàng nghìn dòng
-* Tạo một `components/` chứa toàn bộ project
-* Dùng `any` tùy tiện
+```text
+ProtectedRoute
+RoleRoute
+```
 
----
+### Bước 5
 
-# 45. ACCEPTANCE CRITERIA
+Dựng:
 
-Sau khi hoàn thành, phải đảm bảo:
+```text
+User routes
+Staff routes
+Admin routes
+```
 
-### Architecture
+### Bước 6
 
-* Feature-based
-* Có app layer
-* Có service layer
-* Có API abstraction
-* Có mock data
-* Có types
-* Có TanStack Query
-* Có Zustand
-* Có shadcn/ui
+Dựng:
 
-### UI
+```text
+NotFoundPage
+ForbiddenPage
+```
 
-* Premium
-* Responsive
-* Modern
-* Clean
-* Product-focused
-* Không giống template ecommerce
+### Bước 7
 
-### Code
+Test toàn bộ authentication flow.
 
-* TypeScript strict
-* Không console errors
-* Không TypeScript errors
-* Không broken imports
-* Không unnecessary duplication
-
-### UX
-
-* Navbar hoạt động
-* Mobile menu hoạt động
-* CTA hoạt động
-* Product cards hoạt động
-* Routing hoạt động
-* Responsive hoạt động
-
----
-
-# 46. IMPLEMENTATION ORDER
-
-Thực hiện theo thứ tự:
-
-## STEP 1
-
-Setup React + TypeScript.
-
-## STEP 2
-
-Setup:
-
-Tailwind CSS
-shadcn/ui
-TanStack Query
-Zustand
-React Router
-Lucide React
-
-## STEP 3
-
-Setup aliases:
-
-@/
-
-## STEP 4
-
-Tạo architecture.
-
-## STEP 5
-
-Tạo types.
-
-## STEP 6
-
-Tạo mock products.
-
-## STEP 7
-
-Setup TanStack Query Provider.
-
-## STEP 8
-
-Setup Zustand.
-
-## STEP 9
-
-Tạo API abstraction.
-
-## STEP 10
-
-Tạo MainLayout.
-
-## STEP 11
-
-Tạo Header.
-
-## STEP 12
-
-Tạo Landing Page sections.
-
-## STEP 13
-
-Responsive.
-
-## STEP 14
-
-Animation.
-
-## STEP 15
-
-Accessibility.
-
-## STEP 16
-
-Final code cleanup.
-
----
-
-# 47. FINAL OUTPUT
-
-Sau khi code xong, hãy cung cấp:
-
-### 1. Project structure
-
-Hiển thị tree đầy đủ.
-
-### 2. Architecture explanation
-
-Giải thích:
-
-* app
-* components
-* features
-* services
-* hooks
-* stores
-* utils
-* config
-
-### 3. State management
-
-Giải thích:
-
-TanStack Query dùng cho gì.
-
-Zustand dùng cho gì.
-
-### 4. Mock data flow
-
-Giải thích:
-
-mock data → API → hook → component.
-
-### 5. Future Spring Boot integration
-
-Chỉ rõ những file nào cần thay đổi khi chuyển:
-
-Mock API
-
-sang:
-
-Java Spring Boot REST API.
-
-### 6. Development roadmap
-
-Đề xuất roadmap:
-
-Phase 1:
-Landing Page
-
-Phase 2:
-Product Listing + Product Detail
-
-Phase 3:
-Cart + Wishlist
-
-Phase 4:
-Checkout
-
-Phase 5:
-Spring Boot + MySQL
-
-Phase 6:
-Authentication + JWT
-
-Phase 7:
-Order Management
-
-Phase 8:
-Payment
-
-Phase 9:
-Admin Dashboard
-
----
-
-# FINAL INSTRUCTION
-
-Hãy ưu tiên **chất lượng UI + architecture** thay vì tạo thật nhiều tính năng.
-
-Tôi muốn khi mở website lên, cảm giác đầu tiên phải là:
-
-> "Đây là website launch của một thương hiệu smartphone cao cấp."
-
-Chứ không phải:
-
-> "Đây là một template ecommerce được dựng bằng React."
-
-Landing page phải có storytelling:
-
-**Discover → Desire → Understand → Compare → Imagine owning → Buy**
-
-Hãy xây dựng Phase 1 theo tiêu chuẩn của một frontend portfolio project thực tế có khả năng phát triển thành fullstack e-commerce application.
+**Không chỉ đưa ra code mẫu. Hãy triển khai trực tiếp vào project hiện tại và đảm bảo các file import/export khớp nhau, chạy được và có thể mở rộng cho Product/Category/Order API về sau.**

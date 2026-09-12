@@ -1,60 +1,23 @@
-import { env } from "@/config/env";
+import { axiosInstance } from "./axios";
+import type { AxiosRequestConfig } from "axios";
 
-/**
- * Standard API Client abstraction layer.
- * Prepares the application for Spring Boot REST API integration in future phases.
- */
-class ApiClient {
-  private baseUrl: string;
+export const apiClient = {
+  get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    return axiosInstance.get<T, { data: T }>(url, config).then((res) => res.data);
+  },
 
-  constructor() {
-    this.baseUrl = env.API_BASE_URL;
-  }
+  post<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
+    return axiosInstance.post<T, { data: T }>(url, data, config).then((res) => res.data);
+  },
 
-  private async request<T>(endpoint: string, options?: RequestInit): Promise<T> {
-    const url = `${this.baseUrl}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
-    
-    const headers = {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    };
+  put<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
+    return axiosInstance.put<T, { data: T }>(url, data, config).then((res) => res.data);
+  },
 
-    const response = await fetch(url, {
-      ...options,
-      headers,
-    });
+  delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    return axiosInstance.delete<T, { data: T }>(url, config).then((res) => res.data);
+  },
+};
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: response.statusText }));
-      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-    }
-
-    return response.json() as Promise<T>;
-  }
-
-  public get<T>(endpoint: string, options?: RequestInit): Promise<T> {
-    return this.request<T>(endpoint, { ...options, method: "GET" });
-  }
-
-  public post<T>(endpoint: string, body: unknown, options?: RequestInit): Promise<T> {
-    return this.request<T>(endpoint, {
-      ...options,
-      method: "POST",
-      body: JSON.stringify(body),
-    });
-  }
-
-  public put<T>(endpoint: string, body: unknown, options?: RequestInit): Promise<T> {
-    return this.request<T>(endpoint, {
-      ...options,
-      method: "PUT",
-      body: JSON.stringify(body),
-    });
-  }
-
-  public delete<T>(endpoint: string, options?: RequestInit): Promise<T> {
-    return this.request<T>(endpoint, { ...options, method: "DELETE" });
-  }
-}
-
-export const apiClient = new ApiClient();
+export { axiosInstance } from "./axios";
+export { setupInterceptors } from "./interceptors";
