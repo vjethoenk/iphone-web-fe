@@ -15,7 +15,7 @@ export const HomePage: React.FC = () => {
       <HeroBanner />
       <FeaturedProductSection />
       <ProductShowcaseSection />
-      <ComparisonSection />
+      {/* <ComparisonSection /> */}
       <TechnologySection />
       <CameraSection />
       <PerformanceSection />

@@ -11,6 +11,7 @@ import { UserRole } from "@/features/auth";
 import LoginPage from "@/pages/auth/LoginPage";
 import ForbiddenPage from "@/pages/errors/ForbiddenPage";
 import NotFoundPage from "@/pages/errors/NotFoundPage";
+import ProductDetailPage from "@/pages/products/ProductDetailPage";
 
 const router = createBrowserRouter([
   {
@@ -26,8 +27,8 @@ const router = createBrowserRouter([
         element: <RoutePlaceholder title="Products Showcase & Catalog" />,
       },
       {
-        path: "/products/:id",
-        element: <RoutePlaceholder title="Product Detail Page" />,
+        path: "/products/:slug",
+        element: <ProductDetailPage />,
       },
       {
         path: "/login",

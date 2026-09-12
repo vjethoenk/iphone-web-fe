@@ -1,14 +1,14 @@
 import React from "react";
-import { useProducts } from "@/features/products/hooks/useProducts";
+import { useGetProducts } from "@/features/products/hooks/useProducts";
 import { ProductCard } from "@/features/products/components/ProductCard";
 import { Loading } from "@/components/common/Loading";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 
 export const ProductShowcaseSection: React.FC = () => {
-  const { data: products, isLoading, isError } = useProducts();
+  const { data: products, isLoading, isError } = useGetProducts();
 
   return (
-    <section id="showcase" className="py-24 md:py-36 bg-white dark:bg-black border-b border-neutral-100 dark:border-neutral-900">
+    <section id="showcase" className="py-24 md:py-36 bg-neutral-100 dark:bg-black border-b border-neutral-100 dark:border-neutral-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
@@ -28,7 +28,7 @@ export const ProductShowcaseSection: React.FC = () => {
             <div className="text-center p-12 text-red-500">Failed to load product showcase.</div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
-              {products?.slice(0, 3).map((product) => (
+              {products?.result?.slice(0, 3).map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>

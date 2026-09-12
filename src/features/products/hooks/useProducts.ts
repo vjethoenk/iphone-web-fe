@@ -1,23 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
-import { productsApi } from "../api/products.api";
+import { getAllProducts, getProductBySlug } from "../api/products.api";
 
-export const PRODUCT_QUERY_KEYS = {
-  all: ["products"] as const,
-  detail: (id: string) => ["products", id] as const,
+export const useGetProducts = () => {
+  return useQuery({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const res = await getAllProducts();
+      return res;
+    },
+  });
 };
 
-export function useProducts() {
+export const useGetProductDetail = (slug: string) => {
   return useQuery({
-    queryKey: PRODUCT_QUERY_KEYS.all,
-    queryFn: () => productsApi.getProducts(),
-    staleTime: 1000 * 60 * 5, // 5 minutes cache
+    queryKey: ["product", slug],
+    queryFn: async () => {
+      const res = await getProductBySlug(slug);
+      return res.result;
+    },
+    enabled: Boolean(slug),
   });
-}
-
-export function useProduct(id: string) {
-  return useQuery({
-    queryKey: PRODUCT_QUERY_KEYS.detail(id),
-    queryFn: () => productsApi.getProductById(id),
-    enabled: !!id,
-  });
-}
+};

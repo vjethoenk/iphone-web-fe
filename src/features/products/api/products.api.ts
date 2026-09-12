@@ -1,20 +1,11 @@
-import { mockProducts } from "../data/products.mock";
-import type { Product } from "../types/product.types";
+import { apiClient } from "@/services/api";
+import type { ApiResponse } from "@/types/api.types";
+import type { ProductDetail, Product } from "../types/product.types";
 
-/**
- * Product API service layer abstraction.
- * Currently uses Promise simulated delays over mock data.
- * Easily replaceable with REST API calls (e.g. apiClient.get('/products')) when Java Spring Boot is connected.
- */
-export const productsApi = {
-  getProducts: async (): Promise<Product[]> => {
-    // Simulate minor network delay
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    return mockProducts;
-  },
+export const getAllProducts = () => {
+  return apiClient.get<ApiResponse<Product[]>>("/products");
+};
 
-  getProductById: async (id: string): Promise<Product | undefined> => {
-    await new Promise((resolve) => setTimeout(resolve, 150));
-    return mockProducts.find((product) => product.id === id);
-  },
+export const getProductBySlug = (slug: string) => {
+  return apiClient.get<ApiResponse<ProductDetail>>(`/products/${slug}`);
 };

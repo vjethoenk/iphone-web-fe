@@ -12,7 +12,7 @@ export const FeaturedProductSection: React.FC = () => {
   return (
     <section
       id="featured"
-      className="py-24 md:py-36 bg-neutral-50 dark:bg-neutral-950 border-b border-neutral-200/60 dark:border-neutral-900"
+      className="py-24 md:py-36 bg-white dark:bg-neutral-950 border-b border-neutral-200/60 dark:border-neutral-900"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
