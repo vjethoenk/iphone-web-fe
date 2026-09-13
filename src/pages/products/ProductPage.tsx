@@ -1,7 +1,7 @@
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { Loading } from "@/components/common/Loading";
 import { ProductCard, useGetProducts } from "@/features/products";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
 
@@ -125,6 +125,10 @@ const ProductPage: React.FC = () => {
     const category = searchParams.get("category") ?? undefined;
     const sort = searchParams.get("sort") ?? "featured";
     const price = searchParams.get("price") ?? "all";
+    
+     useEffect(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      }, [category]);
 
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
@@ -147,7 +151,7 @@ const ProductPage: React.FC = () => {
             PRICE_RANGES.find((r) => r.value === price) ?? PRICE_RANGES[0];
 
         let result = products.filter((p) => {
-            const priceValue = Number((p as any).price ?? 0);
+            const priceValue = Number((p ).price ?? 0);
             return priceValue >= range.min && priceValue < range.max;
         });
 
@@ -155,15 +159,15 @@ const ProductPage: React.FC = () => {
             case "price-asc":
                 result = [...result].sort(
                     (a, b) =>
-                        Number((a as any).price ?? 0) -
-                        Number((b as any).price ?? 0),
+                        Number((a ).price ?? 0) -
+                        Number((b ).price ?? 0),
                 );
                 break;
             case "price-desc":
                 result = [...result].sort(
                     (a, b) =>
-                        Number((b as any).price ?? 0) -
-                        Number((a as any).price ?? 0),
+                        Number((b ).price ?? 0) -
+                        Number((a ).price ?? 0),
                 );
                 break;
             case "name-asc":

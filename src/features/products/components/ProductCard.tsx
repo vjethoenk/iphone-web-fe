@@ -8,10 +8,10 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-    return (
-        <Link
-            to={`/products/${product.slug}`}
-            className="
+  return (
+    <Link
+      to={`/products/${product.slug}`}
+      className="
                 group
                 relative
                 bg-white dark:bg-neutral-950
@@ -26,10 +26,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 transition-all duration-500
                 cursor-pointer
             "
-        >
-            {/* Thumbnail */}
-            <div
-                className="
+    >
+      {/* Thumbnail */}
+      <div
+        className="
                     relative
                     w-full
                     aspect-square
@@ -39,11 +39,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                     overflow-hidden
                     rounded-2xl
                 "
-            >
-                <img
-                    src={product.thumbnail}
-                    alt={product.name}
-                    className="
+      >
+        <img
+          src={product.thumbnail}
+          alt={product.name}
+          className="
                         w-full
                         h-full
                         object-contain
@@ -53,38 +53,38 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                         ease-out
                         group-hover:scale-105
                     "
-                />
-            </div>
+        />
+      </div>
 
-            {/* Product Content */}
-            <div className="mt-6 space-y-4">
-                <h3
-                    className="
+      {/* Product Content */}
+      <div className="mt-6 space-y-4">
+        <h3
+          className="
                         text-xl md:text-2xl
                         text-center
                         font-bold
                         tracking-tight
                         text-neutral-900 dark:text-white
                     "
-                >
-                    {product.name}
-                </h3>
+        >
+          {product.name}
+        </h3>
 
-                {/* Pricing */}
-                <div className="pt-1">
-                    <div
-                        className="
+        {/* Pricing */}
+        <div className="pt-1">
+          <div
+            className="
                             text-lg
                             text-center
                             font-bold
                             tracking-tight
                             text-blue-500
                         "
-                    >
-                        {formatCurrency(product.price)}
-                    </div>
-                </div>
-            </div>
-        </Link>
-    );
+          >
+            {formatCurrency(product.price)}
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
 };

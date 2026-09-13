@@ -151,7 +151,7 @@ export const ProductDetail: React.FC = () => {
         <nav className="flex items-center space-x-2 text-xs sm:text-sm text-slate-500 mb-8 overflow-x-auto whitespace-nowrap py-1">
           <Link to="/" className="hover:text-blue-600 transition-colors">Trang chủ</Link>
           <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
-          <Link to="/products" className="hover:text-blue-600 transition-colors">
+          <Link to={`/products?category=${product.category?.slug || "iphone"}`} className="hover:text-blue-600 transition-colors">
             {product.category?.name || "iPhone"}
           </Link>
           <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
