@@ -1,54 +1,44 @@
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-const banners = [
-    {
-        id: 1,
-        image:
-            "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=1920&q=90",
-        title: "iPhone 17 Pro",
-        description: "Hiệu năng đột phá. Thiết kế hoàn toàn mới.",
-    },
-    {
-        id: 2,
-        image:
-            "https://cdn.shopdunk.com/assets/31a3decf-34d4-4a2d-a5e4-ebbb4618662f?key=sd-home-hero-desktop",
-        title: "",
-        description: "",
-    },
-    {
-        id: 3,
-        image:
-            "https://cdn.shopdunk.com/assets/14cad77a-7fd7-48ce-87e0-bff033c0bbe1?key=sd-home-hero-desktop",
-        title: "iPhone 17",
-        description: "Trải nghiệm iPhone thế hệ mới.",
-    },
-    {
-        id: 4,
-        image:
-            "https://cdn.shopdunk.com/assets/5d43fc0b-6260-4340-94f5-06870dd08545?key=sd-home-hero-desktop",
-        title: "iPhone 18",
-        description: "Trải nghiệm iPhone thế hệ mới!.",
-    },
-];
+import { useGetBannersActive } from "@/features/banner/hook/useBanner";
 
 export default function HeroBanner() {
     const [current, setCurrent] = useState(0);
+
+    const {
+        data: banners = [],
+        isLoading,
+    } = useGetBannersActive();
+
     useEffect(() => {
+        if (banners.length <= 1) return;
+
         const timer = setInterval(() => {
             setCurrent((prev) => (prev + 1) % banners.length);
-        }, 5000);
+        }, 3000);
 
         return () => clearInterval(timer);
-    }, []);
+    }, [banners.length]);
 
     const prevSlide = () => {
-        setCurrent((prev) => (prev - 1 + banners.length) % banners.length);
+        setCurrent(
+            (prev) => (prev - 1 + banners.length) % banners.length
+        );
     };
 
     const nextSlide = () => {
-        setCurrent((prev) => (prev + 1) % banners.length);
+        setCurrent(
+            (prev) => (prev + 1) % banners.length
+        );
     };
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (banners.length === 0) {
+        return null;
+    }
 
     return (
         <section className="relative w-full overflow-hidden">
@@ -63,32 +53,12 @@ export default function HeroBanner() {
                             }`}
                     >
                         <img
-                            src={banner.image}
+                            src={banner.imageUrl}
                             alt={banner.title}
                             className="h-full w-full object-cover"
                         />
 
-                        {/* Overlay */}
-                        <div className="absolute inset-0 bg-black/20" />
-
-                        {/* Content */}
-                        <div className="absolute inset-0 flex items-center">
-                            <div className="mx-auto w-full max-w-7xl px-6">
-                                <div className="max-w-xl text-white">
-
-
-                                    {/* <h1 className="text-5xl font-bold tracking-tight md:text-7xl">
-                                        {banner.title}
-                                    </h1>
-
-                                    <p className="mt-4 text-lg text-white/90 md:text-xl">
-                                        {banner.description}
-                                    </p> */}
-
-
-                                </div>
-                            </div>
-                        </div>
+                        <div className="absolute inset-0 bg-black/5" />
                     </div>
                 ))}
             </div>
