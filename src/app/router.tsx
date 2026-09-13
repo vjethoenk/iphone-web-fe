@@ -16,6 +16,7 @@ import ProductDetailPage from "@/pages/products/ProductDetailPage";
 
 import AdminProductListPage from "@/pages/admin/AdminProductListPage";
 import ProductCreatePage from "@/pages/admin/ProductCreatePage";
+import ProductPage from "@/pages/products/ProductPage";
 
 const router = createBrowserRouter([
   // Admin Protected Routes (using AdminLayout)
@@ -73,7 +74,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/products",
-        element: <RoutePlaceholder title="Products Showcase & Catalog" />,
+        element: <ProductPage />,
       },
       {
         path: "/products/:slug",

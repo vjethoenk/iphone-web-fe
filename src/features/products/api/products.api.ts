@@ -9,8 +9,13 @@ import type {
   ProductStorageOption,
 } from "../types/product.types";
 
-export const getAllProducts = () => {
-  return apiClient.get<ApiResponse<Product[]>>("/products");
+
+export const getProducts = (category?: string) => {
+  return apiClient.get<ApiResponse<Product[]>>("/products", {
+    params: {
+      category,
+    },
+  });
 };
 
 export const getAdminProducts = () => {

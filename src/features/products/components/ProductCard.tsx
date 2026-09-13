@@ -8,34 +8,83 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  return (
-    <Link
-      to={`/products/${product.slug}`}
-      className="group relative bg-white border border-none shadow-sm rounded-3xl p-6 md:p-8 flex flex-col justify-between hover:shadow-2xl hover:border-neutral-300 dark:hover:border-neutral-700 transition-all duration-500 hover:cursor-pointer"
-    >
-      <div className="relative w-full aspect-[4/3] my-4 flex items-center justify-center overflow-hidden rounded-2xl group-hover:scale-[1.03] transition-transform duration-500">
-        <img
-          src={product.thumbnail}
-          alt={product.name}
-          className="h-52 object-cover"
-        />
-      </div>
+    return (
+        <Link
+            to={`/products/${product.slug}`}
+            className="
+                group
+                relative
+                bg-white dark:bg-neutral-950
+                border border-neutral-200 dark:border-neutral-800
+                rounded-3xl
+                p-6 md:p-8
+                flex flex-col
+                justify-between
+                shadow-sm
+                hover:shadow-2xl
+                hover:border-neutral-300 dark:hover:border-neutral-700
+                transition-all duration-500
+                cursor-pointer
+            "
+        >
+            {/* Thumbnail */}
+            <div
+                className="
+                    relative
+                    w-full
+                    aspect-square
+                    flex
+                    items-center
+                    justify-center
+                    overflow-hidden
+                    rounded-2xl
+                "
+            >
+                <img
+                    src={product.thumbnail}
+                    alt={product.name}
+                    className="
+                        w-full
+                        h-full
+                        object-contain
+                        p-6
+                        transition-transform
+                        duration-500
+                        ease-out
+                        group-hover:scale-105
+                    "
+                />
+            </div>
 
-      {/* Product Content */}
-      <div className="space-y-4">
-        <div>
-          <h3 className="text-2xl text-center font-bold tracking-tight text-neutral-900 dark:text-white">
-            {product.name}
-          </h3>
-        </div>
+            {/* Product Content */}
+            <div className="mt-6 space-y-4">
+                <h3
+                    className="
+                        text-xl md:text-2xl
+                        text-center
+                        font-bold
+                        tracking-tight
+                        text-neutral-900 dark:text-white
+                    "
+                >
+                    {product.name}
+                </h3>
 
-        {/* Pricing */}
-        <div className="pt-1">
-          <div className="text-lg text-center font-bold tracking-tight text-blue-500">
-            {formatCurrency(product.price)}
-          </div>
-        </div>
-      </div>
-    </Link>
-  );
+                {/* Pricing */}
+                <div className="pt-1">
+                    <div
+                        className="
+                            text-lg
+                            text-center
+                            font-bold
+                            tracking-tight
+                            text-blue-500
+                        "
+                    >
+                        {formatCurrency(product.price)}
+                    </div>
+                </div>
+            </div>
+        </Link>
+    );
 };

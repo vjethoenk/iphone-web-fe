@@ -191,7 +191,7 @@ export const ProductDetail: React.FC = () => {
               <img
                 src={currentImage}
                 alt={`${product.name} ${selectedColor}`}
-                className="relative max-h-[360px] sm:max-h-[440px] w-auto object-contain transition-transform duration-500 group-hover:scale-105 drop-shadow-[0_25px_35px_rgba(15,23,42,0.15)]"
+                className="relative md:max-h-[340px] sm:max-h-[280px] w-auto object-contain transition-transform duration-500 group-hover:scale-105 drop-shadow-[0_25px_35px_rgba(15,23,42,0.15)]"
               />
             </div>
 
@@ -202,11 +202,10 @@ export const ProductDetail: React.FC = () => {
                   <button
                     key={index}
                     onClick={() => setActiveImageIndex(index)}
-                    className={`relative flex-shrink-0 w-20 h-20 rounded-2xl p-2 bg-white border transition-all duration-200 overflow-hidden ${
-                      activeImageIndex === index
-                        ? "border-blue-500 ring-2 ring-blue-100 shadow-sm"
-                        : "border-slate-200 hover:border-slate-300 opacity-80 hover:opacity-100"
-                    }`}
+                    className={`relative flex-shrink-0 w-20 h-20 rounded-2xl p-2 bg-white border transition-all duration-200 overflow-hidden ${activeImageIndex === index
+                      ? "border-blue-500 ring-2 ring-blue-100 shadow-sm"
+                      : "border-slate-200 hover:border-slate-300 opacity-80 hover:opacity-100"
+                      }`}
                   >
                     <img src={imgUrl} alt={`Thumb ${index}`} className="w-full h-full object-contain" />
                   </button>
@@ -296,9 +295,8 @@ export const ProductDetail: React.FC = () => {
                   SKU: <code className="text-slate-700 font-mono">{selectedVariant?.sku || "IPDUO-STD"}</code>
                 </span>
                 <span
-                  className={`font-semibold ${
-                    (selectedVariant?.stockQuantity || 0) > 0 ? "text-emerald-600" : "text-rose-600"
-                  }`}
+                  className={`font-semibold ${(selectedVariant?.stockQuantity || 0) > 0 ? "text-emerald-600" : "text-rose-600"
+                    }`}
                 >
                   {(selectedVariant?.stockQuantity || 0) > 0
                     ? `● Còn hàng (${selectedVariant?.stockQuantity})`
@@ -324,11 +322,10 @@ export const ProductDetail: React.FC = () => {
                           setSelectedColor(color.name);
                           setActiveImageIndex(0);
                         }}
-                        className={`flex items-center gap-3 p-3 rounded-2xl border transition-all text-left ${
-                          isSelected
-                            ? "border-blue-500 bg-blue-50/60 ring-1 ring-blue-200 shadow-sm"
-                            : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
-                        }`}
+                        className={`flex items-center gap-3 p-3 rounded-2xl border transition-all text-left ${isSelected
+                          ? "border-blue-500 bg-blue-50/60 ring-1 ring-blue-200 shadow-sm"
+                          : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
+                          }`}
                       >
                         <span
                           className="w-5 h-5 rounded-full border border-slate-200 shadow-inner shrink-0"
@@ -363,11 +360,10 @@ export const ProductDetail: React.FC = () => {
                       <button
                         key={storage.id}
                         onClick={() => setSelectedStorage(storage.name)}
-                        className={`flex flex-col items-center justify-center p-3 rounded-2xl border transition-all ${
-                          isSelected
-                            ? "border-blue-500 bg-blue-50/60 ring-1 ring-blue-200 shadow-sm"
-                            : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
-                        }`}
+                        className={`flex flex-col items-center justify-center p-3 rounded-2xl border transition-all ${isSelected
+                          ? "border-blue-500 bg-blue-50/60 ring-1 ring-blue-200 shadow-sm"
+                          : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
+                          }`}
                       >
                         <span className={`text-sm font-bold ${isSelected ? "text-blue-700" : "text-slate-700"}`}>
                           {storage.name}
@@ -456,11 +452,10 @@ export const ProductDetail: React.FC = () => {
               <button
                 key={key}
                 onClick={() => setActiveTab(key as typeof activeTab)}
-                className={`pb-4 text-sm font-bold transition-all relative whitespace-nowrap ${
-                  activeTab === key
-                    ? "text-blue-600 border-b-2 border-blue-600"
-                    : "text-slate-500 hover:text-slate-800"
-                }`}
+                className={`pb-4 text-sm font-bold transition-all relative whitespace-nowrap ${activeTab === key
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-slate-500 hover:text-slate-800"
+                  }`}
               >
                 {label}
               </button>
@@ -550,9 +545,8 @@ export const ProductDetail: React.FC = () => {
                     {rows.map(([dt, dd], i) => (
                       <div
                         key={i}
-                        className={`flex justify-between py-1 ${
-                          i < rows.length - 1 ? "border-b border-slate-200/60" : ""
-                        }`}
+                        className={`flex justify-between py-1 ${i < rows.length - 1 ? "border-b border-slate-200/60" : ""
+                          }`}
                       >
                         <dt className="text-slate-500">{dt}</dt>
                         <dd className="font-medium text-slate-800 text-right ml-4">{dd || "-"}</dd>

@@ -34,7 +34,7 @@ export const ComparisonSection: React.FC = () => {
                 <th className="py-6 px-4 text-xs font-semibold uppercase tracking-wider text-neutral-400 w-1/4">
                   Feature / Specs
                 </th>
-                {products?.result?.map((product) => (
+                {products?.map((product) => (
                   <th key={product.id} className="py-6 px-4 text-center w-1/4">
                     <div className="space-y-1">
                       <span className="text-xl font-extrabold text-neutral-900 dark:text-white block">
@@ -55,7 +55,7 @@ export const ComparisonSection: React.FC = () => {
                   <td className="py-5 px-4 font-semibold text-neutral-900 dark:text-white text-xs tracking-wide uppercase">
                     {row.label}
                   </td>
-                  {products?.result?.map((product) => (
+                  {products?.map((product) => (
                     <td key={product.id} className="py-5 px-4 text-center text-neutral-600 dark:text-neutral-300 font-medium">
                       {row.getValue(product)}
                     </td>

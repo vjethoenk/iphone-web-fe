@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {  Search, Menu, X, User, LogOut, Shield, Smartphone, ShoppingCart } from "lucide-react";
+import { Search, Menu, X, User, LogOut, Shield, Smartphone, ShoppingCart } from "lucide-react";
 import { ROUTES } from "@/constants/routes";
 import { useCartStore } from "@/features/cart/stores/cart.store";
 import { useAuthStore, useLogout, UserRole } from "@/features/auth";
@@ -14,10 +14,10 @@ export const Header: React.FC = () => {
 
   const navLinks = [
     { name: "Home", path: ROUTES.HOME },
-    { name: "iPhone", path: `${ROUTES.PRODUCTS}/iphone` },
-    { name: "iPad", path: `${ROUTES.PRODUCTS}/ipad` },
-    { name: "Mac", path: `${ROUTES.PRODUCTS}/mac` },
-    { name: "Accessories", path: `${ROUTES.PRODUCTS}/accessories` },
+    { name: "iPhone", path: `${ROUTES.PRODUCTS}?category=iphone` },
+    { name: "iPad", path: `${ROUTES.PRODUCTS}?category=ipad` },
+    { name: "Mac", path: `${ROUTES.PRODUCTS}?category=macbook` },
+    { name: "Accessories", path: `${ROUTES.PRODUCTS}?category=accessories` },
   ];
 
   const userRoles = (user?.roles || []).map((role) =>
@@ -92,7 +92,7 @@ export const Header: React.FC = () => {
             aria-label={`Shopping cart with ${totalCartItems} items`}
             className="relative p-2 rounded-full text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all"
           >
-            <ShoppingCart  className="w-4 h-4" />
+            <ShoppingCart className="w-4 h-4" />
             {totalCartItems > 0 && (
               <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-gradient-to-br from-slate-900 to-slate-700 text-white text-[10px] font-bold flex items-center justify-center shadow-md shadow-slate-900/30 ring-2 ring-white">
                 {totalCartItems > 99 ? "99+" : totalCartItems}
@@ -128,7 +128,7 @@ export const Header: React.FC = () => {
             </Link>
           )}
 
-          
+
 
           {/* Mobile Menu Toggle */}
           <button

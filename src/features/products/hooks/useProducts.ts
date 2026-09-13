@@ -1,21 +1,21 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  getAllProducts,
   getProductBySlug,
   getAdminProducts,
   createProduct,
   getCategories,
   getColors,
   getStorages,
+  getProducts,
 } from "../api/products.api";
 import type { CreateProductPayload } from "../types/product.types";
 
-export const useGetProducts = () => {
+export const useGetProducts = (category?: string) => {
   return useQuery({
-    queryKey: ["products"],
+    queryKey: ["products", category],
     queryFn: async () => {
-      const res = await getAllProducts();
-      return res;
+      const res = await getProducts(category);
+      return res.result;
     },
   });
 };
