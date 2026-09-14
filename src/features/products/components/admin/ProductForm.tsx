@@ -269,9 +269,9 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             setValue={setValue}
           />
 
-          <ProductVariantsSection watch={watch} setValue={setValue} errors={errors} />
+          <ProductVariantsSection control={form.control} errors={errors} />
 
-          <ProductImagesSection watch={watch} setValue={setValue} />
+          <ProductImagesSection control={form.control} setValue={setValue} />
 
           <ProductSpecificationsSection
             register={register}

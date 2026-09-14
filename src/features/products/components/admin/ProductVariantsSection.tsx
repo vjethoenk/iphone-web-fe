@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { UseFormWatch, UseFormSetValue, FieldErrors } from "react-hook-form";
+import { useFieldArray, useWatch, type Control, type FieldErrors } from "react-hook-form";
 import type { ProductFormValues } from "../../types/product.schema";
 import type { ProductVariantPayload } from "../../types/product.types";
 import { useGetColors, useGetStorages } from "../../hooks/useProducts";
@@ -8,21 +8,23 @@ import { VariantDialog } from "./VariantDialog";
 import { Layers, Plus, Sparkles, Loader2 } from "lucide-react";
 
 interface ProductVariantsSectionProps {
-  watch: UseFormWatch<ProductFormValues>;
-  setValue: UseFormSetValue<ProductFormValues>;
+  control: Control<ProductFormValues>;
   errors: FieldErrors<ProductFormValues>;
 }
 
 export const ProductVariantsSection: React.FC<ProductVariantsSectionProps> = ({
-  watch,
-  setValue,
+  control,
   errors,
 }) => {
   const { data: colors = [], isLoading: isLoadingColors } = useGetColors();
   const { data: storages = [], isLoading: isLoadingStorages } = useGetStorages();
 
-  const variants = watch("variants") || [];
-  const productSlug = watch("slug") || "IPDUO";
+  const { append, remove, update, replace } = useFieldArray({
+    control,
+    name: "variants",
+  });
+  const variants = useWatch({ control, name: "variants" }) || [];
+  const productSlug = useWatch({ control, name: "slug" }) || "IPDUO";
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -41,19 +43,15 @@ export const ProductVariantsSection: React.FC<ProductVariantsSectionProps> = ({
   };
 
   const handleRemove = (index: number) => {
-    const updated = variants.filter((_, i) => i !== index);
-    setValue("variants", updated, { shouldValidate: true });
+    remove(index);
   };
 
-  const handleSaveVariant = (savedVariant: ProductVariantPayload, editIdx?: number) => {
-    let updated: ProductVariantPayload[];
-    if (editIdx !== undefined && editIdx >= 0) {
-      updated = [...variants];
-      updated[editIdx] = savedVariant;
+  const handleSaveVariant = (savedVariant: ProductVariantPayload, editIdx?: number | null) => {
+    if (typeof editIdx === "number" && editIdx >= 0) {
+      update(editIdx, savedVariant);
     } else {
-      updated = [...variants, savedVariant];
+      append(savedVariant);
     }
-    setValue("variants", updated, { shouldValidate: true });
   };
 
   // Quick preset matrix generator dynamically using fetched API colors and storages!
@@ -77,7 +75,7 @@ export const ProductVariantsSection: React.FC<ProductVariantsSectionProps> = ({
         });
       });
     });
-    setValue("variants", generated, { shouldValidate: true });
+    replace(generated);
   };
 
   return (
@@ -129,7 +127,7 @@ export const ProductVariantsSection: React.FC<ProductVariantsSectionProps> = ({
 
       {/* Table */}
       <VariantTable
-        variants={variants}
+        variants={variants as ProductVariantPayload[]}
         onEdit={handleOpenEdit}
         onRemove={handleRemove}
         colors={colors}

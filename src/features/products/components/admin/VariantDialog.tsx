@@ -99,7 +99,7 @@ export const VariantDialog: React.FC<VariantDialogProps> = ({
         lowStockThreshold: data.lowStockThreshold ?? 5,
         active: data.active ?? true,
       },
-      editIndex !== null && editIndex !== undefined ? editIndex : undefined
+      typeof editIndex === "number" ? editIndex : undefined
     );
     onClose();
   };
@@ -129,7 +129,7 @@ export const VariantDialog: React.FC<VariantDialogProps> = ({
         </div>
 
         {/* Modal Body Form */}
-        <form onSubmit={handleSubmit(onSubmitForm)} className="p-6 space-y-4">
+        <div className="p-6 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             {/* Color Select */}
             <div className="space-y-1.5">
@@ -265,13 +265,14 @@ export const VariantDialog: React.FC<VariantDialogProps> = ({
               Hủy
             </button>
             <button
-              type="submit"
+              type="button"
+              onClick={handleSubmit(onSubmitForm)}
               className="px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-700 shadow-xs transition-colors"
             >
               {editIndex !== null && editIndex !== undefined ? "Cập nhật biến thể" : "Lưu biến thể"}
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

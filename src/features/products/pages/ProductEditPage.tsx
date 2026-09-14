@@ -8,7 +8,12 @@ import type { ProductFormValues } from "@/features/products/types/product.schema
 import type { ProductDetail } from "@/features/products/types/product.types";
 import { Loading } from "@/components/common/Loading";
 
-const toFormValues = (product: ProductDetail): ProductFormValues => ({
+const toFormValues = (product: ProductDetail): ProductFormValues => {
+  const productImages = product.images?.length
+    ? product.images
+    : product.colors?.flatMap((color) => color.images ?? []) ?? [];
+
+  return {
   categoryId: typeof product.category === "string" ? product.category : product.category?.id ?? "",
   name: product.name,
   slug: product.slug,
@@ -19,8 +24,8 @@ const toFormValues = (product: ProductDetail): ProductFormValues => ({
   status: product.status,
   featured: product.featured,
   variants: (product.variants ?? []).map((variant) => ({
-    colorId: variant.color.id,
-    storageId: variant.storage.id,
+    colorId: variant.color?.id ?? "",
+    storageId: variant.storage?.id ?? "",
     sku: variant.sku,
     price: variant.price,
     originalPrice: variant.originalPrice,
@@ -28,7 +33,7 @@ const toFormValues = (product: ProductDetail): ProductFormValues => ({
     lowStockThreshold: variant.lowStockThreshold ?? 0,
     active: variant.active,
   })),
-  images: (product.images ?? []).map((image) => ({
+  images: productImages.map((image) => ({
     colorId: image.colorId ?? null,
     imageUrl: image.imageUrl,
     altText: image.altText,
@@ -45,7 +50,8 @@ const toFormValues = (product: ProductDetail): ProductFormValues => ({
     magsafe: product.specification?.magsafe ?? false,
     nfc: product.specification?.nfc ?? false,
   },
-});
+  };
+};
 
 export const ProductEditPage: React.FC = () => {
   const navigate = useNavigate();

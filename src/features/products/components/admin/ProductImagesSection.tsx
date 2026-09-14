@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { UseFormWatch, UseFormSetValue } from "react-hook-form";
+import { useWatch, type Control, type UseFormSetValue } from "react-hook-form";
 import type { ProductFormValues } from "../../types/product.schema";
 import type { ProductImagePayload } from "../../types/product.types";
 import { useGetColors } from "../../hooks/useProducts";
@@ -7,16 +7,16 @@ import { ProductImageCard } from "./ProductImageCard";
 import { Image as ImageIcon, Plus, Sparkles, Link as LinkIcon, Loader2 } from "lucide-react";
 
 interface ProductImagesSectionProps {
-  watch: UseFormWatch<ProductFormValues>;
+  control: Control<ProductFormValues>;
   setValue: UseFormSetValue<ProductFormValues>;
 }
 
 export const ProductImagesSection: React.FC<ProductImagesSectionProps> = ({
-  watch,
+  control,
   setValue,
 }) => {
   const { data: colors = [], isLoading: isLoadingColors } = useGetColors();
-  const images = watch("images") || [];
+  const images = useWatch({ control, name: "images" }) || [];
   const [newUrl, setNewUrl] = useState("");
   const [newColorId, setNewColorId] = useState("");
 
