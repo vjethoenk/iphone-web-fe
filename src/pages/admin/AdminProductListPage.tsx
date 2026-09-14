@@ -13,51 +13,6 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-// Mock Fallback Product if API is not returning list yet
-const MOCK_IPHONE_DUO: Product = {
-  id: "9414aa8f-5726-4f3b-b2b5-10264a98bef0",
-  name: "iPhone Duo",
-  slug: "iphone-duo",
-  brand: "Apple",
-  category: {
-    id: "9414aa8f-5726-4f3b-b2b5-10264a98bef0",
-    name: "iPhone",
-    slug: "iphone",
-    status: "ACTIVE",
-  },
-  shortDescription:
-    "iPhone Duo với thiết kế hiện đại, hiệu năng mạnh mẽ và trải nghiệm màn hình cao cấp.",
-  description:
-    "iPhone Duo là mẫu smartphone cao cấp của Apple, hướng đến trải nghiệm sử dụng hiện đại...",
-  thumbnail: "https://nhantin.shopdunk.com/hm_service_image/iphoneDuo/den.png",
-  status: "ACTIVE",
-  featured: true,
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-  price: 64990000,
-  variants: [
-    {
-      id: "v1",
-      color: { id: "5b3d781c", name: "Deep Black", hexCode: "#1F2022" },
-      storage: { id: "03b08163", name: "256GB" },
-      sku: "IPDUO-256GB-DEEP-BLACK",
-      price: 64990000,
-      originalPrice: 64990000,
-      stockQuantity: 40,
-      active: true,
-    },
-    {
-      id: "v2",
-      color: { id: "ca447104", name: "Silver", hexCode: "#F1F2F4" },
-      storage: { id: "0fe899ae", name: "512GB" },
-      sku: "IPDUO-512GB-SILVER",
-      price: 71490000,
-      originalPrice: 71490000,
-      stockQuantity: 40,
-      active: true,
-    },
-  ],
-};
 
 export const AdminProductListPage: React.FC = () => {
   const navigate = useNavigate();
@@ -67,7 +22,7 @@ export const AdminProductListPage: React.FC = () => {
 
   const apiProducts: Product[] = Array.isArray(data?.result)
     ? data.result
-    : [MOCK_IPHONE_DUO];
+    : [];
 
   const filteredProducts = apiProducts.filter((prod) => {
     const matchesSearch =

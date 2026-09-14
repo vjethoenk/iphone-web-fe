@@ -20,7 +20,6 @@ export const ProductCreatePage: React.FC = () => {
     setSuccessMsg(null);
     setErrorMsg(null);
 
-    // Call API mutation POST /api/v1/products
     createProductMutation.mutate(values, {
       onSuccess: () => {
         setSuccessMsg(`Tạo sản phẩm "${values.name}" thành công!`);
@@ -32,7 +31,7 @@ export const ProductCreatePage: React.FC = () => {
         const message =
           error?.response?.data?.message ||
           error?.message ||
-          "Lỗi kết nối API server (http://localhost:8080/api/v1/products). Dữ liệu form sẵn sàng!";
+          "Lỗi kết nối API.";
         setErrorMsg(message);
       },
     });
