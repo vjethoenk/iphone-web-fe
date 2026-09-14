@@ -16,6 +16,7 @@ import ProductDetailPage from "@/features/products/pages/ProductDetailPage";
 
 import AdminProductListPage from "@/features/products/pages/AdminProductListPage";
 import ProductCreatePage from "@/features/products/pages/ProductCreatePage";
+import ProductEditPage from "@/features/products/pages/ProductEditPage";
 import ProductPage from "@/features/products/pages/ProductPage";
 import ColorSettingsPage from "@/features/settings/pages/ColorSettingsPage";
 import StorageSettingsPage from "@/features/settings/pages/StorageSettingsPage";
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: "products/new",
         element: <ProductCreatePage />,
+      },
+      {
+        path: "products/:slug/edit",
+        element: <ProductEditPage />,
       },
       {
         path: "products/create",

@@ -18,6 +18,7 @@ export const Header: React.FC = () => {
     { name: "iPhone", path: `${ROUTES.PRODUCTS}?category=iphone` },
     { name: "iPad", path: `${ROUTES.PRODUCTS}?category=ipad` },
     { name: "Mac", path: `${ROUTES.PRODUCTS}?category=macbook` },
+    { name: "Watch", path: `${ROUTES.PRODUCTS}?category=watch` },
     { name: "Accessories", path: `${ROUTES.PRODUCTS}?category=accessories` },
   ];
 

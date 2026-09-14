@@ -32,6 +32,10 @@ export const createProduct = (payload: CreateProductPayload) => {
   return apiClient.post<ApiResponse<Product>>("/products", payload);
 };
 
+export const updateProduct = (slug: string, payload: CreateProductPayload) => {
+  return apiClient.put<ApiResponse<Product>>(`/products/${slug}`, payload);
+};
+
 export const getCategories = () => {
   return apiClient.get<ApiResponse<Category[]>>("/category");
 };

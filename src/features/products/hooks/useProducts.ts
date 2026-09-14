@@ -3,6 +3,7 @@ import {
   getProductBySlug,
   getAdminProducts,
   createProduct,
+  updateProduct,
   getCategories,
   getColors,
   getStorages,
@@ -54,6 +55,20 @@ export const useCreateProduct = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+    },
+  });
+};
+
+export const useUpdateProduct = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ slug, payload }: { slug: string; payload: CreateProductPayload }) =>
+      updateProduct(slug, payload),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+      queryClient.invalidateQueries({ queryKey: ["product", variables.slug] });
     },
   });
 };

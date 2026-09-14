@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { productFormSchema, type ProductFormValues } from "../../types/product.schema";
@@ -15,6 +15,7 @@ import { Sparkles, AlertCircle } from "lucide-react";
 interface ProductFormProps {
   onSubmit: (values: ProductFormValues) => void;
   onCancel: () => void;
+  initialValues?: Partial<ProductFormValues>;
   isSubmitting?: boolean;
   submitError?: string | null;
 }
@@ -22,6 +23,7 @@ interface ProductFormProps {
 export const ProductForm: React.FC<ProductFormProps> = ({
   onSubmit,
   onCancel,
+  initialValues,
   isSubmitting = false,
   submitError = null,
 }) => {
@@ -54,6 +56,19 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       },
     },
   });
+
+  useEffect(() => {
+    if (initialValues) {
+      form.reset({
+        ...form.getValues(),
+        ...initialValues,
+        specification: {
+          ...form.getValues("specification"),
+          ...initialValues.specification,
+        },
+      });
+    }
+  }, [initialValues]);
 
   const {
     register,
