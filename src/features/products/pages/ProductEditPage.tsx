@@ -9,7 +9,7 @@ import type { ProductDetail } from "@/features/products/types/product.types";
 import { Loading } from "@/components/common/Loading";
 
 const toFormValues = (product: ProductDetail): ProductFormValues => ({
-  categoryId: product.category?.id ?? "",
+  categoryId: typeof product.category === "string" ? product.category : product.category?.id ?? "",
   name: product.name,
   slug: product.slug,
   brand: product.brand,

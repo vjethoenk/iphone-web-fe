@@ -161,7 +161,7 @@ export const AdminProductListPage: React.FC = () => {
                     {/* Category */}
                     <td className="px-4 py-3.5 text-slate-800">
                       <span className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-[11px] font-semibold border border-indigo-200/60">
-                        {prod.category || "iPhone"}
+                        {prod.category}
                       </span>
                     </td>
 

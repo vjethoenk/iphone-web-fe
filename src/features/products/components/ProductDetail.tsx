@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import {
   ChevronRight,
   ShieldCheck,
@@ -24,14 +24,13 @@ import {
   Star,
 } from "lucide-react";
 import { useGetProductDetail } from "../hooks/useProducts";
-import { useCartStore } from "@/features/cart/stores/cart.store";
 import type { ProductDetail as ProductDetailType, ProductVariantDetail } from "../types/product.types";
 import { Loading } from "@/components/common/Loading";
 
 export const ProductDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
-  const addItem = useCartStore((state) => state.addItem);
+  // const navigate = useNavigate();
+  // const addItem = useCartStore((state) => state.addItem);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -81,17 +80,18 @@ export const ProductDetail: React.FC = () => {
     : 0;
 
   const handleAddToCart = () => {
-    for (let i = 0; i < quantity; i++) {
-      addItem(product, selectedColor, selectedStorage);
-    }
-    setToastMessage(`Đã thêm ${quantity} sản phẩm vào giỏ hàng!`);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 3500);
-  };
+    //   for (let i = 0; i < quantity; i++) {
+    //     addItem(product, selectedColor, selectedStorage);
+    //   }
+    //   setToastMessage(`Đã thêm ${quantity} sản phẩm vào giỏ hàng!`);
+    //   setShowToast(true);
+    //   setTimeout(() => setShowToast(false), 3500);
+    // };
 
-  const handleBuyNow = () => {
-    addItem(product, selectedColor, selectedStorage);
-    navigate("/cart");
+    // const handleBuyNow = () => {
+    //   addItem(product, selectedColor, selectedStorage);
+    //   navigate("/cart");
+    setToastMessage(`Đã thêm sản phẩm vào giỏ hàng!`)
   };
 
   const formatPrice = (price: number) => {
@@ -243,7 +243,7 @@ export const ProductDetail: React.FC = () => {
             <div>
               <div className="flex items-center justify-between gap-4">
                 <span className="text-xs font-bold tracking-widest text-blue-600 uppercase">
-                  {product.brand}
+                  {product.category?.name}
                 </span>
                 <div className="flex items-center gap-2 text-slate-400">
                   <button className="p-2 rounded-full hover:bg-rose-50 hover:text-rose-500 transition-colors">
@@ -431,7 +431,7 @@ export const ProductDetail: React.FC = () => {
               </button>
 
               <button
-                onClick={handleBuyNow}
+                // onClick={handleBuyNow}
                 className="flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg shadow-blue-500/25 transition-all active:scale-[0.98]"
               >
                 <Zap className="w-5 h-5 fill-white" />
@@ -606,7 +606,7 @@ export const ProductDetail: React.FC = () => {
               Thêm Giỏ
             </button>
             <button
-              onClick={handleBuyNow}
+              // onClick={handleBuyNow}
               className="px-5 py-2.5 rounded-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm shadow-md shadow-blue-500/20 transition-all"
             >
               Mua Ngay

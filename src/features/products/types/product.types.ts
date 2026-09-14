@@ -161,6 +161,27 @@ export interface ProductVariantDetail {
 
 export interface Product {
   id: string;
+  category: string ;
+  name: string;
+  slug: string;
+  brand: string;
+  shortDescription: string;
+  description: string;
+  thumbnail: string;
+  status: ProductStatus;
+  featured: boolean;
+  createdAt: string;
+  updatedAt: string;
+  price: number;
+  specification?: ProductSpecification;
+  colors?: ProductColorDetail[];
+  storages?: ProductStorageDetail[];
+  variants?: ProductVariantDetail[];
+  images?: ProductImage[];
+}
+
+export interface ProductDetail {
+  id: string;
   category: Category;
   name: string;
   slug: string;
@@ -180,7 +201,7 @@ export interface Product {
   images?: ProductImage[];
 }
 
-export type ProductDetail = Product;
+
 
 // Reference Options matching setup.md sample payload IDs
 export const MOCK_CATEGORIES: Category[] = [
