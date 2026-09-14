@@ -70,12 +70,25 @@ export interface ProductColorOption {
   id: string;
   name: string;
   hexCode: string;
+  acvite?: boolean;
+}
+
+export interface CreateColorPayload {
+  name: string;
+  hexCode: string;
+  displayOrder: number;
+  active: boolean;
 }
 
 export interface ProductStorageOption {
   id: string;
   name: string;
   capacityGb?: number;
+}
+
+export interface CreateStoragePayload {
+  name: string;
+  capacityGb: number;
 }
 
 export interface ProductVariantPayload {

@@ -17,6 +17,8 @@ import ProductDetailPage from "@/features/products/pages/ProductDetailPage";
 import AdminProductListPage from "@/features/products/pages/AdminProductListPage";
 import ProductCreatePage from "@/features/products/pages/ProductCreatePage";
 import ProductPage from "@/features/products/pages/ProductPage";
+import ColorSettingsPage from "@/features/settings/pages/ColorSettingsPage";
+import StorageSettingsPage from "@/features/settings/pages/StorageSettingsPage";
 
 const router = createBrowserRouter([
   // Admin Protected Routes (using AdminLayout)
@@ -58,7 +60,15 @@ const router = createBrowserRouter([
       },
       {
         path: "settings",
-        element: <RoutePlaceholder title="Admin Settings" />,
+        element: <Navigate to="/admin/settings/colors" replace />,
+      },
+      {
+        path: "settings/colors",
+        element: <ColorSettingsPage />,
+      },
+      {
+        path: "settings/storages",
+        element: <StorageSettingsPage />,
       },
     ],
   },

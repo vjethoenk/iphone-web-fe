@@ -7,6 +7,8 @@ import type {
   Category,
   ProductColorOption,
   ProductStorageOption,
+  CreateColorPayload,
+  CreateStoragePayload,
 } from "../types/product.types";
 
 
@@ -38,6 +40,14 @@ export const getColors = () => {
   return apiClient.get<ApiResponse<ProductColorOption[]>>("/color");
 };
 
+export const createColor = (payload: CreateColorPayload) => {
+  return apiClient.post<ApiResponse<ProductColorOption>>("/color", payload);
+};
+
 export const getStorages = () => {
   return apiClient.get<ApiResponse<ProductStorageOption[]>>("/storage");
+};
+
+export const createStorage = (payload: CreateStoragePayload) => {
+  return apiClient.post<ApiResponse<ProductStorageOption>>("/storage", payload);
 };

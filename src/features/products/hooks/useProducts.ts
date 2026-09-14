@@ -7,8 +7,14 @@ import {
   getColors,
   getStorages,
   getProducts,
+  createColor,
+  createStorage,
 } from "../api/products.api";
-import type { CreateProductPayload } from "../types/product.types";
+import type {
+  CreateColorPayload,
+  CreateProductPayload,
+  CreateStoragePayload,
+} from "../types/product.types";
 
 export const useGetProducts = (category?: string) => {
   return useQuery({
@@ -78,6 +84,28 @@ export const useGetStorages = () => {
     queryFn: async () => {
       const res = await getStorages();
       return res.result || [];
+    },
+  });
+};
+
+export const useCreateColor = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: CreateColorPayload) => createColor(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["colors"] });
+    },
+  });
+};
+
+export const useCreateStorage = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: CreateStoragePayload) => createStorage(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["storages"] });
     },
   });
 };

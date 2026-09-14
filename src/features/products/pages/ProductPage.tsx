@@ -43,7 +43,7 @@ const ProductPage: React.FC = () => {
             PRICE_RANGES.find((r) => r.value === price) ?? PRICE_RANGES[0];
 
         let result = products.filter((p) => {
-            const priceValue = Number((p as any).price ?? 0);
+            const priceValue = Number((p).price ?? 0);
             return priceValue >= range.min && priceValue < range.max;
         });
 
@@ -51,15 +51,15 @@ const ProductPage: React.FC = () => {
             case "price-asc":
                 result = [...result].sort(
                     (a, b) =>
-                        Number((a as any).price ?? 0) -
-                        Number((b as any).price ?? 0),
+                        Number((a).price ?? 0) -
+                        Number((b).price ?? 0),
                 );
                 break;
             case "price-desc":
                 result = [...result].sort(
                     (a, b) =>
-                        Number((b as any).price ?? 0) -
-                        Number((a as any).price ?? 0),
+                        Number((b).price ?? 0) -
+                        Number((a).price ?? 0),
                 );
                 break;
             case "name-asc":

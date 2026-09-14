@@ -31,6 +31,11 @@ const sidebarNavigation: NavigationItem[] = [
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
+const settingsNavigation = [
+  { name: "Colors", href: "/admin/settings/colors" },
+  { name: "Storages", href: "/admin/settings/storages" },
+];
+
 export const AdminLayout: React.FC = () => {
   const location = useLocation();
 
@@ -108,17 +113,19 @@ export const AdminLayout: React.FC = () => {
                     (item.href !== "/admin" && location.pathname.startsWith(item.href));
                   const Icon = item.icon;
 
+                  const isSettings = item.href === "/admin/settings";
+
                   return (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      className={cn(
+                    <div key={item.name}>
+                      <Link
+                        to={item.href}
+                        className={cn(
                         "flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all group",
                         isActive
                           ? "bg-indigo-50 text-indigo-700 border border-indigo-200/80 shadow-xs"
                           : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
-                      )}
-                    >
+                        )}
+                      >
                       <div className="flex items-center gap-3">
                         <Icon
                           className={cn(
@@ -142,7 +149,16 @@ export const AdminLayout: React.FC = () => {
                           {item.badge}
                         </span>
                       )}
-                    </Link>
+                      </Link>
+                      {isSettings && isActive && (
+                        <div className="ml-6 mt-1 space-y-1 border-l border-indigo-200 pl-3">
+                          {settingsNavigation.map((subItem) => {
+                            const isSubItemActive = location.pathname === subItem.href;
+                            return <Link key={subItem.href} to={subItem.href} className={cn("block rounded-lg px-3 py-2 text-xs font-medium transition-colors", isSubItemActive ? "bg-indigo-100 text-indigo-700" : "text-slate-500 hover:bg-slate-200/60 hover:text-slate-900")}>{subItem.name}</Link>;
+                          })}
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </nav>

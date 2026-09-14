@@ -7,6 +7,7 @@ import { Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
 
 export const CartPage: React.FC = () => {
   const { items, removeItem, updateQuantity, clearCart, getTotalPrice } = useCartStore();
+  console.log("Cart items:", items); // Debugging line to check the cart items
 
   if (items.length === 0) {
     return (
@@ -46,36 +47,36 @@ export const CartPage: React.FC = () => {
       <div className="space-y-4">
         {items.map((item) => (
           <div
-            key={`${item.productId}-${item.variantId}`}
+            key={`${item.product.id}-${item.product.variants?.[0]?.id}-${item.selectedColor}-${item.selectedStorage}`}
             className="flex gap-4 p-4 rounded-2xl bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800"
           >
-            {item.thumbnail && (
+            {item.product.thumbnail && (
               <div className="w-20 h-20 rounded-xl overflow-hidden bg-white flex-shrink-0">
                 <img
-                  src={item.thumbnail}
-                  alt={item.name}
+                  src={item.product.thumbnail}
+                  alt={item.product.name}
                   className="w-full h-full object-contain"
                 />
               </div>
             )}
 
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-neutral-900 dark:text-white truncate">{item.name}</p>
-              {item.variantLabel && (
+              <p className="font-semibold text-neutral-900 dark:text-white truncate">{item.product.name}</p>
+              {item.product.brand && (
                 <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
-                  {item.variantLabel}
+                  {item.product.brand}
                 </p>
               )}
               <p className="text-sm font-bold text-neutral-900 dark:text-white mt-1">
-                {formatCurrency(item.price)}
+                {formatCurrency(item.product.price)}
               </p>
             </div>
 
             <div className="flex flex-col items-end gap-3">
               <button
-                onClick={() => removeItem(item.productId, item.variantId)}
+                onClick={() => removeItem(item.product.id, item.selectedColor, item.selectedStorage)}
                 className="text-neutral-400 hover:text-red-500 transition-colors"
-                aria-label={`Remove ${item.name}`}
+                aria-label={`Remove ${item.product.name}`}
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -83,7 +84,7 @@ export const CartPage: React.FC = () => {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() =>
-                    updateQuantity(item.productId, item.variantId, item.quantity - 1)
+                    updateQuantity(item.product.id, item.selectedColor, item.selectedStorage, item.quantity - 1)
                   }
                   className="w-7 h-7 rounded-full bg-neutral-200 dark:bg-neutral-800 flex items-center justify-center text-sm font-bold hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
                   aria-label="Decrease quantity"
@@ -93,7 +94,7 @@ export const CartPage: React.FC = () => {
                 <span className="text-sm font-medium w-5 text-center">{item.quantity}</span>
                 <button
                   onClick={() =>
-                    updateQuantity(item.productId, item.variantId, item.quantity + 1)
+                    updateQuantity(item.product.id, item.selectedColor, item.selectedStorage, item.quantity + 1)
                   }
                   className="w-7 h-7 rounded-full bg-neutral-200 dark:bg-neutral-800 flex items-center justify-center text-sm font-bold hover:bg-neutral-300 dark:hover:bg-neutral-700 transition-colors"
                   aria-label="Increase quantity"
