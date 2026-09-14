@@ -12,6 +12,7 @@ import {
   Bell,
   ChevronDown,
   Sparkles,
+  Smartphone,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -24,7 +25,8 @@ interface NavigationItem {
 
 const sidebarNavigation: NavigationItem[] = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { name: "Products", href: "/admin/products", icon: Package },
+  { name: "Products", href: "/admin/products", icon: Smartphone },
+  { name: "Categories", href: "/admin/categories", icon: Package },
   { name: "Orders", href: "/admin/orders", icon: ShoppingCart, badge: "12" },
   { name: "Customers", href: "/admin/customers", icon: Users },
   { name: "Users", href: "/admin/users", icon: UserCheck },

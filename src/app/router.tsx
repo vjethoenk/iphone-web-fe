@@ -19,6 +19,7 @@ import ProductCreatePage from "@/features/products/pages/ProductCreatePage";
 import ProductPage from "@/features/products/pages/ProductPage";
 import ColorSettingsPage from "@/features/settings/pages/ColorSettingsPage";
 import StorageSettingsPage from "@/features/settings/pages/StorageSettingsPage";
+import { AdminCategoryListPage } from "@/features/category/page/AdminCategoryListPage";
 
 const router = createBrowserRouter([
   // Admin Protected Routes (using AdminLayout)
@@ -28,7 +29,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Navigate to="/admin/products" replace />,
+        element: <Navigate to="/admin" replace />,
       },
       {
         path: "products",
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: "orders",
         element: <RoutePlaceholder title="Admin Orders Management" />,
+      },
+      {
+        path: "categories",
+        element: <AdminCategoryListPage />,
       },
       {
         path: "customers",
