@@ -31,11 +31,13 @@ const sidebarNavigation: NavigationItem[] = [
   { name: "Customers", href: "/admin/customers", icon: Users },
   { name: "Users", href: "/admin/users", icon: UserCheck },
   { name: "Settings", href: "/admin/settings", icon: Settings },
+  
 ];
 
 const settingsNavigation = [
   { name: "Colors", href: "/admin/settings/colors" },
   { name: "Storages", href: "/admin/settings/storages" },
+  { name: "Banners", href: "/admin/settings/banners" },
 ];
 
 export const AdminLayout: React.FC = () => {

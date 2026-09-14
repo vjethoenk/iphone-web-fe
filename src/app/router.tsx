@@ -20,6 +20,7 @@ import ProductEditPage from "@/features/products/pages/ProductEditPage";
 import ProductPage from "@/features/products/pages/ProductPage";
 import ColorSettingsPage from "@/features/settings/pages/ColorSettingsPage";
 import StorageSettingsPage from "@/features/settings/pages/StorageSettingsPage";
+import BannerSettingsPage from "@/features/settings/pages/BannerSettingsPage";
 import { AdminCategoryListPage } from "@/features/category/page/AdminCategoryListPage";
 
 const router = createBrowserRouter([
@@ -79,6 +80,10 @@ const router = createBrowserRouter([
       {
         path: "settings/storages",
         element: <StorageSettingsPage />,
+      },
+      {
+        path: "settings/banners",
+        element: <BannerSettingsPage />,
       },
     ],
   },
