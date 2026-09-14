@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useGetBannersActive } from "@/features/banner/hook/useBanner";
+import { useGetBannersActive } from "@/features/banner/hooks/useBanner";
 
 export default function HeroBanner() {
     const [current, setCurrent] = useState(0);

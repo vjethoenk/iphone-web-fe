@@ -7,3 +7,4 @@ export * from "./hooks/useLogout";
 export * from "./hooks/useMyInfo";
 export * from "./components/LoginForm";
 export * from "./components/AuthProvider";
+export * from "./pages/LoginPage";

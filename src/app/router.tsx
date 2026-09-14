@@ -1,22 +1,22 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
-import { MainLayout } from "./layouts/MainLayout";
-import { AdminLayout } from "./layouts/AdminLayout";
+import { MainLayout } from "@/layouts/MainLayout";
+import { AdminLayout } from "@/layouts/AdminLayout";
 import { HomePage } from "@/features/home";
-import { CartPage } from "@/features/cart/CartPage";
+import { CartPage } from "@/features/cart";
 import { RoutePlaceholder } from "@/components/common/RoutePlaceholder";
-import { ProtectedRoute } from "@/components/common/ProtectedRoute";
-import { RoleRoute } from "@/components/common/RoleRoute";
+import { ProtectedRoute } from "@/routes/guards/ProtectedRoute";
+import { RoleRoute } from "@/routes/guards/RoleRoute";
 import { UserRole } from "@/features/auth";
 
-import LoginPage from "@/pages/auth/LoginPage";
-import ForbiddenPage from "@/pages/errors/ForbiddenPage";
-import NotFoundPage from "@/pages/errors/NotFoundPage";
-import ProductDetailPage from "@/pages/products/ProductDetailPage";
+import LoginPage from "@/features/auth/pages/LoginPage";
+import ForbiddenPage from "@/pages/ForbiddenPage";
+import NotFoundPage from "@/pages/NotFoundPage";
+import ProductDetailPage from "@/features/products/pages/ProductDetailPage";
 
-import AdminProductListPage from "@/pages/admin/AdminProductListPage";
-import ProductCreatePage from "@/pages/admin/ProductCreatePage";
-import ProductPage from "@/pages/products/ProductPage";
+import AdminProductListPage from "@/features/products/pages/AdminProductListPage";
+import ProductCreatePage from "@/features/products/pages/ProductCreatePage";
+import ProductPage from "@/features/products/pages/ProductPage";
 
 const router = createBrowserRouter([
   // Admin Protected Routes (using AdminLayout)

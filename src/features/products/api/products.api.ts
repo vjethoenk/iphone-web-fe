@@ -1,4 +1,4 @@
-import { apiClient } from "@/services/api";
+import { apiClient } from "@/lib/api";
 import type { ApiResponse } from "@/types/api.types";
 import type {
   ProductDetail,

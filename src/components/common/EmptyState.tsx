@@ -1,6 +1,6 @@
 import React from "react";
 import { PackageOpen } from "lucide-react";
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils";
 
 interface EmptyStateProps {
   title?: string;
